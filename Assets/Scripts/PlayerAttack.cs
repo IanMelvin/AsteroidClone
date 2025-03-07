@@ -8,7 +8,6 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float firingDelay;
     [SerializeField] private GameObject projectilePrefab;
 
-    Rigidbody2D rigidbody_2D;
     Transform projectileSpawn;
     bool canFire = true;
     bool isPaused = false;
@@ -17,6 +16,8 @@ public class PlayerAttack : MonoBehaviour
     {
         PlayerMovement.OnPauseMenuActive += SetPauseState;
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+
+        canFire = true;
     }
 
     private void OnDisable()
@@ -28,14 +29,7 @@ public class PlayerAttack : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody_2D = GetComponent<Rigidbody2D>();
         projectileSpawn = transform.GetChild(0);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void OnShoot(InputAction.CallbackContext context)
@@ -49,7 +43,7 @@ public class PlayerAttack : MonoBehaviour
     {
         canFire = false;
         ProjectileScript projectile = Instantiate(projectilePrefab, projectileSpawn.position, transform.rotation).GetComponent<ProjectileScript>();
-        projectile.SetDirection(new Vector2(Mathf.Sin((transform.rotation.eulerAngles.z + 90.0f) * Mathf.Deg2Rad), Mathf.Cos((transform.rotation.eulerAngles.z - 90.0f) * Mathf.Deg2Rad)));//rigidbody_2D.velocity.normalized);
+        projectile.SetDirection(new Vector2(Mathf.Sin((transform.rotation.eulerAngles.z + 90.0f) * Mathf.Deg2Rad), Mathf.Cos((transform.rotation.eulerAngles.z - 90.0f) * Mathf.Deg2Rad)));
         projectile.SetShooter(1);
         yield return new WaitForSeconds(firingDelay);
         canFire = true;

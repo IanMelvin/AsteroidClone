@@ -23,14 +23,18 @@ public class PlayerMovement_Retro : MonoBehaviour
     bool isPaused = false;
     bool isMoving = false;
 
+    int playerIndex = 1;
+
     private void OnEnable()
     {
         OnPauseMenuActive += SetPauseState;
+        PlayerHealth.OnPlayerDeath += ToggleDeathState;
     }
 
     private void OnDisable()
     {
         OnPauseMenuActive -= SetPauseState;
+        PlayerHealth.OnPlayerDeath -= ToggleDeathState;
     }
 
     // Start is called before the first frame update
@@ -105,9 +109,24 @@ public class PlayerMovement_Retro : MonoBehaviour
         OnPauseMenuActive?.Invoke(!isPaused);
     }
 
+    public void OnHyperspace(InputAction.CallbackContext context)
+    {
+        if (isPaused) return;
+
+        if (context.phase != InputActionPhase.Canceled) Debug.Log("Hyperspace");
+    }
+
     private void SetPauseState(bool pauseState)
     {
         isPaused = pauseState;
+    }
+
+    private void ToggleDeathState(int playerIndex)
+    {
+        if(this.playerIndex == playerIndex)
+        {
+            velocity = Vector3.zero;
+        }
     }
 
     IEnumerator ChangeSprite()

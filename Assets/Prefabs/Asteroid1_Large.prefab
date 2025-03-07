@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -2021400872699974238}
   - component: {fileID: 2382249297023738062}
   - component: {fileID: 2466813790805335731}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Asteroid1_Large
   m_TagString: Asteroid
   m_Icon: {fileID: 0}
@@ -32,7 +32,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -104,7 +104,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.8
+  m_Radius: 0.7
 --- !u!50 &3195897265842678340
 Rigidbody2D:
   serializedVersion: 4
@@ -138,6 +138,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7432377644970541a8a7204e4d5ace7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  asteroidSprites:
+  - {fileID: 1737075778, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
+  - {fileID: 1911928107, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
+  - {fileID: 1452298191, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
   asteroidNextSizeDown: {fileID: 4087991258976866145, guid: 30fd091529384584b92a043956ffc7a2, type: 3}
   speed: 2
 --- !u!114 &2382249297023738062

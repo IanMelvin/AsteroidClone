@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: -8266870362089932277}
   - component: {fileID: 2796619716121448930}
   m_Layer: 0
-  m_Name: Ship_Player_2
+  m_Name: Ship_Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7856750294140411691}
   m_Father: {fileID: 0}
@@ -134,7 +134,7 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -305,6 +305,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 8754a1cc-baa1-40ae-a1df-ac2976fe8711
     m_ActionName: Gameplay/TurnRightRetro[/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2796619716121448930}
+        m_TargetAssemblyTypeName: PlayerMovement_Retro, Assembly-CSharp
+        m_MethodName: OnHyperspace
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: da82c941-dbd8-44cb-9aff-fb2bc0af438b
+    m_ActionName: Gameplay/Hyperspace[/Keyboard/shift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard+Mouse
   m_DefaultActionMap: Gameplay
