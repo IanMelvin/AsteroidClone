@@ -1,1 +1,1 @@
-Repo for AsterBroid, a mash up of the 80s classic Asteroids and Brotato
+A clone of the classic game Asteroids... but with Local Multiplayer PvP and a Leaderboard.
