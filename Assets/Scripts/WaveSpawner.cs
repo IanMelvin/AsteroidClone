@@ -15,8 +15,8 @@ enum SpawnDirections
 public class WaveSpawner : MonoBehaviour
 {
     [SerializeField] GameObject largeAsteroidPrefab;
-    [SerializeField] float distanceFromEdge_Min = 0.0f;
-    [SerializeField] float distanceFromEdge_Max = 0.0f;
+    //[SerializeField] float distanceFromEdge_Min = -2.0f;
+    //[SerializeField] float distanceFromEdge_Max = 0.0f;
     [SerializeField] float timeBetweenWaves = 2.0f;
 
     List<AsteroidScript> asteroids = new List<AsteroidScript>();
@@ -126,7 +126,7 @@ public class WaveSpawner : MonoBehaviour
     private Vector2 SpawnLocation(params SpawnDirections[] spawnDirections)
     {
         SpawnDirections randomSpawnDirection = spawnDirections[Random.Range(0, spawnDirections.Length)];
-        distanceFromEdge = 0; Random.Range(distanceFromEdge_Min, distanceFromEdge_Max);
+        distanceFromEdge = 0; //Random.Range(distanceFromEdge_Min, distanceFromEdge_Max);
 
         DefineScreenValues();
 

@@ -63,11 +63,12 @@ public class AsteroidScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!isPaused)
+        if (!isPaused)
         {
             Vector2 targetVelocity = movementDirection * speed;
             rigidbody_2D.velocity = targetVelocity;
         }
+        else rigidbody_2D.velocity = Vector2.zero;
     }
 
     public void InitializeAsteroid(Vector2 movementDirection, int spriteIndex)

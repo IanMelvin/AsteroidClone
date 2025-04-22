@@ -243,7 +243,7 @@ MonoBehaviour:
     m_ActionName: Gameplay/Shoot[/Mouse/leftButton,/Keyboard/space]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: -7422918479539724833}
+      - m_Target: {fileID: 2796619716121448930}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnPaused
         m_Mode: 1

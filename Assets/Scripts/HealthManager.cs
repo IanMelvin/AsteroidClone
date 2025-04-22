@@ -1,20 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class HealthManager : MonoBehaviour
 {
-    [SerializeField] GameObject[] player1LifeSprites;
-    [SerializeField] GameObject[] player2LifeSprites;
-    [SerializeField] GameObject[] player3LifeSprites;
-    [SerializeField] GameObject[] player4LifeSprites;
+    [SerializeField] TextMeshProUGUI player1LifeText;
+    [SerializeField] TextMeshProUGUI player2LifeText;
+    [SerializeField] TextMeshProUGUI player3LifeText;
+    [SerializeField] TextMeshProUGUI player4LifeText;
 
     [SerializeField] GameObject player1;
     [SerializeField] GameObject player2;
     [SerializeField] GameObject player3;
     [SerializeField] GameObject player4;
 
-    [SerializeField] int numLives = 3;
+    [SerializeField] int defaultNumLives = 3;
     [SerializeField] float respawnDelay = 2f;
     [SerializeField] float spawnRadiusSafeZone = 2f;
 
@@ -25,8 +26,13 @@ public class HealthManager : MonoBehaviour
     {
         PlayerHealth.OnPlayerDeath += RemoveALife;
         ScoreManager.OnExtraLifeAwarded += AwardExtraLife;
-        playerLives = new int[] { numLives, numLives, numLives, numLives };
+        playerLives = new int[] { defaultNumLives, defaultNumLives, defaultNumLives, defaultNumLives };
         spawner = GetComponent<WaveSpawner>();
+
+        if (player1) UpdateLifeUI(1);
+        if (player2) UpdateLifeUI(2);
+        if (player3) UpdateLifeUI(4);
+        if (player4) UpdateLifeUI(4);
     }
 
     private void OnDisable()
@@ -35,23 +41,23 @@ public class HealthManager : MonoBehaviour
         ScoreManager.OnExtraLifeAwarded -= AwardExtraLife;
     }
 
-    void UpdateLifeSprites(int playerIndex, bool status)
+    void UpdateLifeUI(int playerIndex)
     {
-        if (playerLives[playerIndex - 1] >= numLives || playerLives[playerIndex - 1] < 0) return;
+        if (playerLives[playerIndex - 1] < 0) return;
 
         switch (playerIndex)
         {
             case 1:
-                player1LifeSprites[playerLives[playerIndex - 1]].SetActive(status);
+                player1LifeText.text = $"x {playerLives[playerIndex-1]}";
                 break;
             case 2:
-                player2LifeSprites[playerLives[playerIndex - 1]].SetActive(status);
+                player2LifeText.text = $"x {playerLives[playerIndex-1]}";
                 break;
             case 3:
-                player3LifeSprites[playerLives[playerIndex - 1]].SetActive(status);
+                player3LifeText.text = $"x {playerLives[playerIndex - 1]}";
                 break;
             case 4:
-                player4LifeSprites[playerLives[playerIndex - 1]].SetActive(status);
+                player4LifeText.text = $"x {playerLives[playerIndex - 1]}";
                 break;
         }
     }
@@ -115,16 +121,14 @@ public class HealthManager : MonoBehaviour
 
     void AwardExtraLife(int playerIndex)
     {
-        UpdateLifeSprites(playerIndex, true);
         playerLives[playerIndex - 1]++;
-        //Debug.Log(playerLives[playerIndex - 1]);
+        UpdateLifeUI(playerIndex);
     }
 
     void RemoveALife(int playerIndex)
     {
         playerLives[playerIndex - 1]--;
-        //Debug.Log(playerLives[playerIndex - 1]);
-        UpdateLifeSprites(playerIndex, false);
+        UpdateLifeUI(playerIndex);
 
         if (playerLives[playerIndex - 1] <= 0) Debug.Log("GameOver");
         else StartCoroutine(RespawnDelay(respawnDelay, 1));

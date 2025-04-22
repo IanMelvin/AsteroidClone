@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class PlayerMovement_Retro : MonoBehaviour
 {
     public static Action<bool> OnPauseMenuActive;
+    public static Action<bool> OnHyperspaceActive;
 
     [SerializeField] private float playerSpeed;
     [SerializeField] private float turnSpeed;
@@ -14,16 +16,26 @@ public class PlayerMovement_Retro : MonoBehaviour
     [SerializeField] private Sprite movingSprite;
 
     Vector2 inputMovement;
+    Vector2 prePauseVelocity;
     int rotationDirection = 0;
     float smoothTime = 0.5f;
     Vector3 velocity = Vector3.zero;
     Rigidbody2D rigidbody_2D;
     SpriteRenderer spriteRenderer;
 
+    float cameraDistance;
+    Vector3 bottomLeft;
+    Vector3 topLeft;
+    Vector3 bottomRight;
+    Camera playerCam;
+
     bool isPaused = false;
     bool isMoving = false;
+    bool isHyperspacing = false;
 
     int playerIndex = 1;
+
+    Coroutine changeSpritesCoroutine;
 
     private void OnEnable()
     {
@@ -35,6 +47,7 @@ public class PlayerMovement_Retro : MonoBehaviour
     {
         OnPauseMenuActive -= SetPauseState;
         PlayerHealth.OnPlayerDeath -= ToggleDeathState;
+        if(changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
     }
 
     // Start is called before the first frame update
@@ -42,55 +55,68 @@ public class PlayerMovement_Retro : MonoBehaviour
     {
         rigidbody_2D = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
 
-    private void Update()
-    {
-        
+        playerCam = Camera.main;
     }
 
     private void FixedUpdate()
     {
-        if (!isPaused)
+        if (!isPaused && !isHyperspacing)
         {
-            if(isMoving) inputMovement = new Vector2(Mathf.Sin((transform.rotation.eulerAngles.z + 90.0f) * Mathf.Deg2Rad), Mathf.Cos((transform.rotation.eulerAngles.z - 90.0f) * Mathf.Deg2Rad));
+            if (isMoving) inputMovement = new Vector2(Mathf.Sin((transform.rotation.eulerAngles.z + 90.0f) * Mathf.Deg2Rad), Mathf.Cos((transform.rotation.eulerAngles.z - 90.0f) * Mathf.Deg2Rad));
 
             Vector3 targetVelocity = inputMovement * playerSpeed;
             rigidbody_2D.velocity = Vector3.SmoothDamp(rigidbody_2D.velocity, targetVelocity, ref velocity, smoothTime);
+            prePauseVelocity = rigidbody_2D.velocity;
 
-            //transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z + (turnSpeed * rotationDirection)));
             transform.Rotate(new Vector3(0, 0, turnSpeed * rotationDirection));
         }
+        else if (isHyperspacing)
+        {
+            isMoving = false;
+            rigidbody_2D.velocity = Vector2.zero;
+            inputMovement = Vector2.zero;
+            smoothTime = 0.0f;
+            if (changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
+            spriteRenderer.sprite = defaultSprite;
+            rotationDirection = 0;
+        }
+        else rigidbody_2D.velocity = Vector2.zero;
     }
 
+    private void DefineScreenValues()
+    {
+        cameraDistance = playerCam.nearClipPlane;
+
+        bottomLeft = playerCam.ScreenToWorldPoint(new Vector3(0, 0, cameraDistance));
+        topLeft = playerCam.ScreenToWorldPoint(new Vector3(0, Screen.height, cameraDistance));
+        bottomRight = playerCam.ScreenToWorldPoint(new Vector3(Screen.width, 0, cameraDistance));
+    }
 
     public void OnForward(InputAction.CallbackContext context)
     {
-        if (isPaused) return;
+        if ((isPaused || isHyperspacing) && context.phase == InputActionPhase.Started) return;
 
         if(context.phase == InputActionPhase.Started)
         {
             smoothTime = 0.5f;
-            StartCoroutine(ChangeSprite());
-        }
-
-        if (context.phase != InputActionPhase.Canceled)
-        {
+            changeSpritesCoroutine = StartCoroutine(ChangeSprite());
             isMoving = true;
         }
-        else
+
+        if (context.phase == InputActionPhase.Canceled)
         {
             isMoving = false;
             inputMovement = Vector2.zero;
             smoothTime = 1.5f;
-            StopAllCoroutines();
+            StopCoroutine(changeSpritesCoroutine);
             spriteRenderer.sprite = defaultSprite;
         }
     }
 
     public void OnLeftRotation(InputAction.CallbackContext context)
     {
-        if (isPaused) return;
+        if ((isPaused || isHyperspacing) && context.phase == InputActionPhase.Started) return;
 
         if (context.phase != InputActionPhase.Canceled) rotationDirection = 1;
         else rotationDirection = 0;
@@ -98,7 +124,7 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     public void OnRightRotation(InputAction.CallbackContext context)
     {
-        if (isPaused) return;
+        if ((isPaused || isHyperspacing) && context.phase == InputActionPhase.Started) return;
 
         if (context.phase != InputActionPhase.Canceled) rotationDirection = -1;
         else rotationDirection = 0;
@@ -111,14 +137,20 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     public void OnHyperspace(InputAction.CallbackContext context)
     {
-        if (isPaused) return;
+        if ((isPaused || isHyperspacing) && context.phase == InputActionPhase.Started) return;
 
-        if (context.phase != InputActionPhase.Canceled) Debug.Log("Hyperspace");
+        if (context.phase == InputActionPhase.Started)
+        {
+            OnHyperspaceActive?.Invoke(true);
+            isHyperspacing = true;
+            StartCoroutine(HyperspaceAbility());
+        }
     }
 
     private void SetPauseState(bool pauseState)
     {
         isPaused = pauseState;
+        if(!isPaused) rigidbody_2D.velocity = prePauseVelocity;
     }
 
     private void ToggleDeathState(int playerIndex)
@@ -131,11 +163,31 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     IEnumerator ChangeSprite()
     {
-        while(!isPaused)
+        while(true)
         {
             yield return new WaitForSeconds(0.05f);
-            if (spriteRenderer.sprite == movingSprite) spriteRenderer.sprite = defaultSprite;
-            else spriteRenderer.sprite = movingSprite;
+            if(!isPaused)
+            {
+                if (spriteRenderer.sprite == movingSprite) spriteRenderer.sprite = defaultSprite;
+                else spriteRenderer.sprite = movingSprite;
+            }
         }
+    }
+
+    IEnumerator HyperspaceAbility()
+    {
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        gameObject.GetComponent<PolygonCollider2D>().enabled = false;
+        float distanceFromEdge = -0.5f;
+        DefineScreenValues();
+        float x = Random.Range(bottomLeft.x - distanceFromEdge, bottomRight.x + distanceFromEdge);
+        float y = Random.Range(bottomLeft.y - distanceFromEdge, topLeft.y + distanceFromEdge);
+
+        yield return new WaitForSeconds(1.0f);
+        transform.position = new Vector2(x, y);
+        gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        gameObject.GetComponent<PolygonCollider2D>().enabled = true;
+        isHyperspacing = false;
+        OnHyperspaceActive?.Invoke(false);
     }
 }

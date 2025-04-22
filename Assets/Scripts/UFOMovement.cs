@@ -37,7 +37,8 @@ public class UFOMovement : MonoBehaviour
         {
             Vector2 targetVelocity = movementDirection * ufoSpeed;
             rigidbody_2D.velocity = targetVelocity;
-        }    
+        }
+        else rigidbody_2D.velocity = Vector2.zero;
     }
 
     private void SetPauseState(bool pauseState)
