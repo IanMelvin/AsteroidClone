@@ -127,7 +127,7 @@ public class HealthManager : MonoBehaviour
 
     void AwardExtraLife(int playerIndex)
     {
-        extraLifeAudio.Play();
+        StartCoroutine("PlayExtraLifeAudio");
         playerLives[playerIndex - 1]++;
         UpdateLifeUI(playerIndex);
     }
@@ -139,5 +139,13 @@ public class HealthManager : MonoBehaviour
 
         if (playerLives[playerIndex - 1] <= 0) Debug.Log("GameOver");
         else StartCoroutine(RespawnDelay(respawnDelay, 1));
+    }
+
+    IEnumerator PlayExtraLifeAudio()
+    {
+        extraLifeAudio.Play();
+        extraLifeAudio.loop = true;
+        yield return new WaitForSeconds(extraLifeAudio.clip.length * 12);
+        extraLifeAudio.Stop();
     }
 }
