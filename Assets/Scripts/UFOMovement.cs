@@ -28,7 +28,7 @@ public class UFOMovement : MonoBehaviour
 
     private void Start()
     {
-
+        rigidbody_2D = GetComponent<Rigidbody2D>();
     }
 
     void FixedUpdate()
