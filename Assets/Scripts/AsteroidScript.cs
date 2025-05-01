@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D),typeof(AudioSource))]
 public class AsteroidScript : MonoBehaviour
 {
     public static Action<AsteroidScript> OnAsteroidBroken;
@@ -13,8 +13,9 @@ public class AsteroidScript : MonoBehaviour
     [SerializeField] GameObject asteroidNextSizeDown;
     [SerializeField] float speed;
     [SerializeField] private AudioSource explosionAudio;
-
+    
     Rigidbody2D rigidbody_2D;
+    ParticleSystem pSystem;
     Vector2 movementDirection = Vector2.zero;
 
     bool isPaused = false;
@@ -56,6 +57,7 @@ public class AsteroidScript : MonoBehaviour
         SetAsteroidSprite(Random.Range(0, asteroidSprites.Length));
 
         rigidbody_2D = GetComponent<Rigidbody2D>();
+        pSystem = GetComponent<ParticleSystem>();
 
         if (!explosionAudio) explosionAudio = GetComponent<AudioSource>();
     }
@@ -102,6 +104,7 @@ public class AsteroidScript : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         gameObject.GetComponent<CircleCollider2D>().enabled = false;
         explosionAudio.Play();
+        pSystem.Play();
         yield return new WaitForSeconds(explosionAudio.clip.length);
         Destroy(gameObject);
     }
