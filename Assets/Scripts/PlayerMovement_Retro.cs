@@ -74,13 +74,7 @@ public class PlayerMovement_Retro : MonoBehaviour
         }
         else if (isHyperspacing)
         {
-            isMoving = false;
-            rigidbody_2D.velocity = Vector2.zero;
-            inputMovement = Vector2.zero;
-            smoothTime = 0.0f;
-            if (changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
-            spriteRenderer.sprite = defaultSprite;
-            rotationDirection = 0;
+            StopAllMovement();
         }
         else rigidbody_2D.velocity = Vector2.zero;
     }
@@ -161,8 +155,20 @@ public class PlayerMovement_Retro : MonoBehaviour
     {
         if(this.playerIndex == playerIndex)
         {
-            velocity = Vector3.zero;
+            StopAllMovement();
         }
+    }
+
+    private void StopAllMovement()
+    {
+        isMoving = false;
+        rigidbody_2D.velocity = Vector2.zero;
+        inputMovement = Vector2.zero;
+        smoothTime = 0.0f;
+        if (changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
+        spriteRenderer.sprite = defaultSprite;
+        rotationDirection = 0;
+        thrustAudio.Stop();
     }
 
     IEnumerator ChangeSprite()
