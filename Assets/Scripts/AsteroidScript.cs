@@ -12,6 +12,7 @@ public class AsteroidScript : MonoBehaviour
     [SerializeField] Sprite[] asteroidSprites;
     [SerializeField] GameObject asteroidNextSizeDown;
     [SerializeField] float speed;
+    [SerializeField] private AudioSource explosionAudio;
 
     Rigidbody2D rigidbody_2D;
     Vector2 movementDirection = Vector2.zero;
@@ -41,8 +42,7 @@ public class AsteroidScript : MonoBehaviour
                     .GetComponent<AsteroidScript>()
                     .SetMovementDirection(GetMovementDirection() + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f)));
             }
-            OnAsteroidBroken?.Invoke(this);
-            Destroy(gameObject);
+            StartCoroutine(DestroyAsteroid());
         }
     }
 
@@ -51,14 +51,13 @@ public class AsteroidScript : MonoBehaviour
     {
         OnAsteroidBorn?.Invoke(this);
 
-        if (movementDirection == Vector2.zero)
-        {
-            movementDirection = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)).normalized;
-        }
+        if (movementDirection == Vector2.zero) movementDirection = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)).normalized;
 
         SetAsteroidSprite(Random.Range(0, asteroidSprites.Length));
 
         rigidbody_2D = GetComponent<Rigidbody2D>();
+
+        if (!explosionAudio) explosionAudio = GetComponent<AudioSource>();
     }
 
     void FixedUpdate()
@@ -95,5 +94,15 @@ public class AsteroidScript : MonoBehaviour
     public Vector2 GetMovementDirection()
     {
         return movementDirection;
+    }
+
+    IEnumerator DestroyAsteroid()
+    {
+        OnAsteroidBroken?.Invoke(this);
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;
+        explosionAudio.Play();
+        yield return new WaitForSeconds(explosionAudio.clip.length);
+        Destroy(gameObject);
     }
 }

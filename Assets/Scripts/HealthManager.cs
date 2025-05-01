@@ -18,6 +18,7 @@ public class HealthManager : MonoBehaviour
     [SerializeField] int defaultNumLives = 3;
     [SerializeField] float respawnDelay = 2f;
     [SerializeField] float spawnRadiusSafeZone = 2f;
+    [SerializeField] AudioSource extraLifeAudio;
 
     WaveSpawner spawner;
     int[] playerLives;
@@ -28,6 +29,7 @@ public class HealthManager : MonoBehaviour
         ScoreManager.OnExtraLifeAwarded += AwardExtraLife;
         playerLives = new int[] { defaultNumLives, defaultNumLives, defaultNumLives, defaultNumLives };
         spawner = GetComponent<WaveSpawner>();
+        if (!extraLifeAudio) extraLifeAudio = GetComponent<AudioSource>();
 
         if (player1) UpdateLifeUI(1);
         if (player2) UpdateLifeUI(2);
@@ -100,27 +102,32 @@ public class HealthManager : MonoBehaviour
                 player1.transform.position = Vector3.zero;
                 player1.transform.rotation = Quaternion.identity;
                 player1.SetActive(true);
+                //player1.GetComponent<PlayerHealth>().Respawn();
                 break;
             case 2:
                 player2.transform.position = Vector3.zero;
                 player2.transform.rotation = Quaternion.identity;
                 player2.SetActive(true);
+                //player2.GetComponent<PlayerHealth>().Respawn();
                 break;
             case 3:
                 player3.transform.position = Vector3.zero;
                 player3.transform.rotation = Quaternion.identity;
                 player3.SetActive(true);
+                //player3.GetComponent<PlayerHealth>().Respawn();
                 break;
             case 4:
                 player4.transform.position = Vector3.zero;
                 player4.transform.rotation = Quaternion.identity;
                 player4.SetActive(true);
+                //player4.GetComponent<PlayerHealth>().Respawn();
                 break;
         }
     }
 
     void AwardExtraLife(int playerIndex)
     {
+        extraLifeAudio.Play();
         playerLives[playerIndex - 1]++;
         UpdateLifeUI(playerIndex);
     }

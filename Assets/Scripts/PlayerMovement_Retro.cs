@@ -14,6 +14,7 @@ public class PlayerMovement_Retro : MonoBehaviour
     [SerializeField] private float turnSpeed;
     [SerializeField] private Sprite defaultSprite;
     [SerializeField] private Sprite movingSprite;
+    [SerializeField] private AudioSource thrustAudio;
 
     Vector2 inputMovement;
     Vector2 prePauseVelocity;
@@ -55,8 +56,8 @@ public class PlayerMovement_Retro : MonoBehaviour
     {
         rigidbody_2D = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
         playerCam = Camera.main;
+        if (!thrustAudio) thrustAudio = GetComponent<AudioSource>();
     }
 
     private void FixedUpdate()
@@ -102,6 +103,8 @@ public class PlayerMovement_Retro : MonoBehaviour
             smoothTime = 0.5f;
             changeSpritesCoroutine = StartCoroutine(ChangeSprite());
             isMoving = true;
+            thrustAudio.Play();
+            thrustAudio.loop = true;
         }
 
         if (context.phase == InputActionPhase.Canceled)
@@ -111,6 +114,7 @@ public class PlayerMovement_Retro : MonoBehaviour
             smoothTime = 1.5f;
             StopCoroutine(changeSpritesCoroutine);
             spriteRenderer.sprite = defaultSprite;
+            thrustAudio.Stop();
         }
     }
 

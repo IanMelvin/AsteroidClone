@@ -20,7 +20,7 @@ public class PlayerAttack : MonoBehaviour
     {
         PlayerMovement.OnPauseMenuActive += SetPauseState;
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
-        PlayerMovement_Retro.OnHyperspaceActive += SetPauseState;
+        PlayerMovement_Retro.OnHyperspaceActive += SetHyperspaceStatus;
         ProjectileScript.OnProjectilesDespawned += RemoveActiveProjectile;
 
         fireDelayElapsed = true;
@@ -31,8 +31,10 @@ public class PlayerAttack : MonoBehaviour
     {
         PlayerMovement.OnPauseMenuActive -= SetPauseState;
         PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
-        PlayerMovement_Retro.OnHyperspaceActive -= SetPauseState;
+        PlayerMovement_Retro.OnHyperspaceActive -= SetHyperspaceStatus;
         ProjectileScript.OnProjectilesDespawned -= RemoveActiveProjectile;
+
+        numActiveProjectiles = 0;
     }
 
     // Start is called before the first frame update
