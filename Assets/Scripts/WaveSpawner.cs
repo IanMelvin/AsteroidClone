@@ -14,6 +14,9 @@ enum SpawnDirections
 
 public class WaveSpawner : MonoBehaviour
 {
+    public static Action OnWaveStarted;
+    public static Action OnWaveEnded;
+
     [SerializeField] GameObject largeAsteroidPrefab;
     //[SerializeField] float distanceFromEdge_Min = -2.0f;
     //[SerializeField] float distanceFromEdge_Max = 0.0f;
@@ -60,19 +63,8 @@ public class WaveSpawner : MonoBehaviour
     void StartWave()
     {
         asteroids.Clear();
-        int totalAsteroidsToSpawn = 0;
-        switch(currentWave)
-        {
-            case 0:
-                totalAsteroidsToSpawn = 4;
-                break;
-            case 1:
-                totalAsteroidsToSpawn = 5;
-                break;
-            default:
-                totalAsteroidsToSpawn = 6;
-                break;
-        }
+        int totalAsteroidsToSpawn = 4 + (currentWave * 2);
+        totalAsteroidsToSpawn = totalAsteroidsToSpawn < 11 ? totalAsteroidsToSpawn : 11;
 
         totalNumberOfAsteroidsInWave = totalAsteroidsToSpawn * 7; // total number of asteroid entities needed to be destroyed to end wave
 
@@ -80,6 +72,8 @@ public class WaveSpawner : MonoBehaviour
         {
             Instantiate(largeAsteroidPrefab, SpawnLocation(SpawnDirections.TOP, SpawnDirections.BOTTOM, SpawnDirections.LEFT, SpawnDirections.RIGHT), Quaternion.identity).GetComponent<AsteroidScript>();
         }
+
+        OnWaveStarted?.Invoke();
     }
 
     void AddNewAsteroid(AsteroidScript asteroidBorn)
@@ -109,6 +103,7 @@ public class WaveSpawner : MonoBehaviour
     {
         currentWave++;
         currentNumberOfDestroyedAsteroids = 0;
+        OnWaveEnded?.Invoke();
     }
     
     private void DefineScreenValues()
