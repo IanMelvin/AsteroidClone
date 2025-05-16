@@ -40,8 +40,7 @@ public class MusicManager : MonoBehaviour
 
     void UpdateTimeBetweenBeats()
     {
-        timeBetweenBeats = timeBetweenBeats <= 0.25f ? 0.25f : (1f - 0.0336134f * Mathf.Pow(elapsedTime, 0.793745f));//1-0.0336134x^{0.793745}
-        Debug.Log($"{elapsedTime} : {timeBetweenBeats}");
+        timeBetweenBeats = timeBetweenBeats <= 0.25f ? 0.25f : (1f - 0.0336134f * Mathf.Pow(elapsedTime, 0.793745f));
     }
 
     void SetPauseState(bool pausedState)
@@ -57,11 +56,7 @@ public class MusicManager : MonoBehaviour
             if (!isPaused)
             {
                 elapsedTime += timeBetweenBeats;
-                if (audioSource.clip.name != beatOne.name)
-                {
-                    Debug.Log("Switching Clip");
-                    audioSource.clip = beatOne;
-                }
+                if (audioSource.clip.name != beatOne.name) audioSource.clip = beatOne;
                 else audioSource.clip = beatTwo;
                 audioSource.Play();
                 UpdateTimeBetweenBeats();
