@@ -14,13 +14,18 @@ public class PlayerAttack : MonoBehaviour
     bool reachedMaxProjectiles = false;
     bool isPaused = false;
     bool isHyperspacing = false;
+    bool isDead = false;
     int numActiveProjectiles = 0;
+
+    int playerIndex = 1;
 
     private void OnEnable()
     {
+        HealthManager.OnPlayerRespawn += Respawn;
         PlayerMovement.OnPauseMenuActive += SetPauseState;
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
         PlayerMovement_Retro.OnHyperspaceActive += SetHyperspaceStatus;
+        PlayerHealth.OnPlayerDeath += ToggleDeathState;
         ProjectileScript.OnProjectilesDespawned += RemoveActiveProjectile;
 
         fireDelayElapsed = true;
@@ -29,9 +34,11 @@ public class PlayerAttack : MonoBehaviour
 
     private void OnDisable()
     {
+        HealthManager.OnPlayerRespawn -= Respawn;
         PlayerMovement.OnPauseMenuActive -= SetPauseState;
         PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
         PlayerMovement_Retro.OnHyperspaceActive -= SetHyperspaceStatus;
+        PlayerHealth.OnPlayerDeath -= ToggleDeathState;
         ProjectileScript.OnProjectilesDespawned -= RemoveActiveProjectile;
 
         numActiveProjectiles = 0;
@@ -45,7 +52,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void OnShoot(InputAction.CallbackContext context)
     {
-        if (isPaused || isHyperspacing) return;
+        if (isPaused || isHyperspacing || isDead) return;
 
         if (context.phase != InputActionPhase.Canceled && fireDelayElapsed && !reachedMaxProjectiles) StartCoroutine("Fire");
     }
@@ -55,7 +62,7 @@ public class PlayerAttack : MonoBehaviour
         fireDelayElapsed = false;
         ProjectileScript projectile = Instantiate(projectilePrefab, projectileSpawn.position, transform.rotation).GetComponent<ProjectileScript>();
         projectile.SetDirection(new Vector2(Mathf.Sin((transform.rotation.eulerAngles.z + 90.0f) * Mathf.Deg2Rad), Mathf.Cos((transform.rotation.eulerAngles.z - 90.0f) * Mathf.Deg2Rad)));
-        projectile.SetShooter(1);
+        projectile.SetShooter(playerIndex);
         numActiveProjectiles++;
         if (numActiveProjectiles >= maxNumActiveProjectiles) reachedMaxProjectiles = true;
         yield return new WaitForSeconds(firingDelay);
@@ -76,5 +83,21 @@ public class PlayerAttack : MonoBehaviour
     {
         numActiveProjectiles--;
         if (numActiveProjectiles < maxNumActiveProjectiles) reachedMaxProjectiles = false;
+    }
+
+    private void ToggleDeathState(int playerIndex)
+    {
+        if (this.playerIndex == playerIndex)
+        {
+            isDead = true;
+        }
+    }
+
+    private void Respawn(int playerIndex)
+    {
+        if (this.playerIndex == playerIndex)
+        {
+            isDead = false;
+        }
     }
 }

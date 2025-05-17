@@ -12,11 +12,19 @@ public class PlayerHealth : MonoBehaviour
     bool isOneHit = true;
     bool isDead = false;
 
+    int playerIndex = 1;
+
     private void OnEnable()
     {
+        HealthManager.OnPlayerRespawn += Respawn;
         isDead = false;
         explosionAudio = GetComponent<AudioSource>();
         pSystem = GetComponent<ParticleSystem>();
+    }
+
+    private void OnDisable()
+    {
+        HealthManager.OnPlayerRespawn -= Respawn;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -30,7 +38,7 @@ public class PlayerHealth : MonoBehaviour
                 //Activate Death particles / sound here
                 if (collision.CompareTag("Projectile")) explosionAudio?.Play();
                 pSystem?.Play();
-                OnPlayerDeath?.Invoke(1);
+                OnPlayerDeath?.Invoke(playerIndex);
                 //gameObject.SetActive(false);
                 gameObject.GetComponent<SpriteRenderer>().enabled = false;
                 gameObject.GetComponent<PolygonCollider2D>().enabled = false;
@@ -39,13 +47,15 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void Respawn()
+    public void Respawn(int playerIndex)
     {
-        isDead = false;
-        transform.position = Vector3.zero;
-        transform.rotation = Quaternion.identity;
-        gameObject.GetComponent<SpriteRenderer>().enabled = true;
-        gameObject.GetComponent<PolygonCollider2D>().enabled = true;
-        //gameObject.GetComponent<PlayerMovement_Retro>().enabled = true;
+        if(this.playerIndex == playerIndex)
+        {
+            isDead = false;
+            transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            gameObject.GetComponent<PolygonCollider2D>().enabled = true;
+        }
     }
 }

@@ -33,6 +33,7 @@ public class PlayerMovement_Retro : MonoBehaviour
     bool isPaused = false;
     bool isMoving = false;
     bool isHyperspacing = false;
+    bool isDead = false;
 
     int playerIndex = 1;
 
@@ -41,13 +42,15 @@ public class PlayerMovement_Retro : MonoBehaviour
     private void OnEnable()
     {
         OnPauseMenuActive += SetPauseState;
-        PlayerHealth.OnPlayerDeath += ToggleDeathState;
+        HealthManager.OnPlayerRespawn += Respawn;
+        PlayerHealth.OnPlayerDeath += SetDeathState;
     }
 
     private void OnDisable()
     {
         OnPauseMenuActive -= SetPauseState;
-        PlayerHealth.OnPlayerDeath -= ToggleDeathState;
+        HealthManager.OnPlayerRespawn -= Respawn;
+        PlayerHealth.OnPlayerDeath -= SetDeathState;
         if(changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
     }
 
@@ -62,7 +65,7 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isPaused && !isHyperspacing)
+        if (!isPaused && !isHyperspacing && !isDead)
         {
             if (isMoving) inputMovement = new Vector2(Mathf.Sin((transform.rotation.eulerAngles.z + 90.0f) * Mathf.Deg2Rad), Mathf.Cos((transform.rotation.eulerAngles.z - 90.0f) * Mathf.Deg2Rad));
 
@@ -90,9 +93,9 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     public void OnForward(InputAction.CallbackContext context)
     {
-        if ((isPaused || isHyperspacing) && context.phase == InputActionPhase.Started) return;
+        if ((isPaused || isHyperspacing || isDead) && context.phase == InputActionPhase.Started) return;
 
-        if(context.phase == InputActionPhase.Started)
+        if (context.phase == InputActionPhase.Started)
         {
             smoothTime = 0.5f;
             changeSpritesCoroutine = StartCoroutine(ChangeSprite());
@@ -106,7 +109,7 @@ public class PlayerMovement_Retro : MonoBehaviour
             isMoving = false;
             inputMovement = Vector2.zero;
             smoothTime = 1.5f;
-            StopCoroutine(changeSpritesCoroutine);
+            if (changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
             spriteRenderer.sprite = defaultSprite;
             thrustAudio.Stop();
         }
@@ -114,7 +117,7 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     public void OnLeftRotation(InputAction.CallbackContext context)
     {
-        if ((isPaused || isHyperspacing) && context.phase == InputActionPhase.Started) return;
+        if ((isPaused || isHyperspacing || isDead) && context.phase == InputActionPhase.Started) return;
 
         if (context.phase != InputActionPhase.Canceled) rotationDirection = 1;
         else rotationDirection = 0;
@@ -122,7 +125,7 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     public void OnRightRotation(InputAction.CallbackContext context)
     {
-        if ((isPaused || isHyperspacing) && context.phase == InputActionPhase.Started) return;
+        if ((isPaused || isHyperspacing || isDead) && context.phase == InputActionPhase.Started) return;
 
         if (context.phase != InputActionPhase.Canceled) rotationDirection = -1;
         else rotationDirection = 0;
@@ -135,7 +138,7 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     public void OnHyperspace(InputAction.CallbackContext context)
     {
-        if ((isPaused || isHyperspacing) && context.phase == InputActionPhase.Started) return;
+        if ((isPaused || isHyperspacing || isDead) && context.phase == InputActionPhase.Started) return;
 
         if (context.phase == InputActionPhase.Started)
         {
@@ -151,11 +154,20 @@ public class PlayerMovement_Retro : MonoBehaviour
         if(!isPaused) rigidbody_2D.velocity = prePauseVelocity;
     }
 
-    private void ToggleDeathState(int playerIndex)
+    private void SetDeathState(int playerIndex)
     {
         if(this.playerIndex == playerIndex)
         {
+            isDead = true;
             StopAllMovement();
+        }
+    }
+
+    private void Respawn (int playerIndex)
+    {
+        if(this.playerIndex == playerIndex)
+        {
+            isDead = false;
         }
     }
 

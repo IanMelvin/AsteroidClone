@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class HealthManager : MonoBehaviour
 {
+    public static Action<int> OnPlayerRespawn;
+
     [SerializeField] TextMeshProUGUI player1LifeText;
     [SerializeField] TextMeshProUGUI player2LifeText;
     [SerializeField] TextMeshProUGUI player3LifeText;
@@ -91,38 +94,7 @@ public class HealthManager : MonoBehaviour
         }
 
         Debug.Log($"Respawn: {timer} seconds");
-        RespawnPlayer(playerIndex);
-    }
-
-    void RespawnPlayer(int playerIndex)
-    {
-        switch (playerIndex)
-        {
-            case 1:
-                //player1.transform.position = Vector3.zero;
-                //player1.transform.rotation = Quaternion.identity;
-                //player1.SetActive(true);
-                player1.GetComponent<PlayerHealth>().Respawn();
-                break;
-            case 2:
-                //player2.transform.position = Vector3.zero;
-                //player2.transform.rotation = Quaternion.identity;
-                //player2.SetActive(true);
-                player2.GetComponent<PlayerHealth>().Respawn();
-                break;
-            case 3:
-                //player3.transform.position = Vector3.zero;
-                //player3.transform.rotation = Quaternion.identity;
-                //player3.SetActive(true);
-                player3.GetComponent<PlayerHealth>().Respawn();
-                break;
-            case 4:
-                //player4.transform.position = Vector3.zero;
-                //player4.transform.rotation = Quaternion.identity;
-                //player4.SetActive(true);
-                player4.GetComponent<PlayerHealth>().Respawn();
-                break;
-        }
+        OnPlayerRespawn?.Invoke(playerIndex);
     }
 
     void AwardExtraLife(int playerIndex)
