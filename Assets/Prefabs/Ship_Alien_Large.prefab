@@ -13,12 +13,15 @@ GameObject:
   - component: {fileID: 8052315933898247233}
   - component: {fileID: -8496802714085760647}
   - component: {fileID: 8411951997823420495}
+  - component: {fileID: 3964702698218470639}
+  - component: {fileID: -1665513154333605023}
+  - component: {fileID: -2235244459491496012}
   - component: {fileID: 4651597707170816202}
   - component: {fileID: 8518998409964666688}
   - component: {fileID: 734361435106633489}
   m_Layer: 0
   m_Name: Ship_Alien_Large
-  m_TagString: UFO
+  m_TagString: Saucer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -140,7 +143,47 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ufoSpeed: 0
-  randomAttacking: 0
+--- !u!114 &3964702698218470639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8052315933898247232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51fabf4e78d45fb44b2d86fdd5c34986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firingDelay: 0.95
+  firingRadius: 0.6
+  projectilePrefab: {fileID: 8175163017496030900, guid: 1b2176d16f0bda640a3475890f55bc28, type: 3}
+  randomAttacking: 1
+--- !u!114 &-1665513154333605023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8052315933898247232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 747deaacc4d2b6843886b318c9926bd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreValue: 200
+--- !u!114 &-2235244459491496012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8052315933898247232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &4651597707170816202
 AudioSource:
   m_ObjectHideFlags: 0

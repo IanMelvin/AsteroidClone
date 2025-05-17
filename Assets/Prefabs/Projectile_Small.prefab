@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 8175163017496030902}
   - component: {fileID: 8175163017496030901}
   - component: {fileID: -2630901403728853682}
-  - component: {fileID: -8150364414514579444}
   - component: {fileID: 2253843062055885184}
+  - component: {fileID: -8150364414514579444}
   - component: {fileID: 4023515452702421599}
   m_Layer: 6
   m_Name: Projectile_Small
@@ -126,18 +126,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &-8150364414514579444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8175163017496030900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2253843062055885184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,6 +141,18 @@ MonoBehaviour:
   speed: 8
   damage: 1
   lifeSpan: 1
+--- !u!114 &-8150364414514579444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8175163017496030900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &4023515452702421599
 AudioSource:
   m_ObjectHideFlags: 0

@@ -45,10 +45,10 @@ GameObject:
   - component: {fileID: -7636235252561346174}
   - component: {fileID: -8441828843474607747}
   - component: {fileID: -7422918479539724833}
-  - component: {fileID: -8099567843576523108}
+  - component: {fileID: 2796619716121448930}
   - component: {fileID: 5714898865605090925}
   - component: {fileID: -8266870362089932277}
-  - component: {fileID: 2796619716121448930}
+  - component: {fileID: -8099567843576523108}
   - component: {fileID: -1833045201217608448}
   - component: {fileID: 3270500073051392021}
   - component: {fileID: 4541399277148974929}
@@ -344,7 +344,7 @@ MonoBehaviour:
   playerSpeed: 2
   defaultSprite: {fileID: 1634823415, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
   movingSprite: {fileID: -267136586, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
---- !u!114 &-8099567843576523108
+--- !u!114 &2796619716121448930
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -353,9 +353,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7439988089582373684}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
+  m_Script: {fileID: 11500000, guid: 1644998580f4bfa48a1e45f2a11cd266, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerSpeed: 2
+  turnSpeed: 4
+  defaultSprite: {fileID: 1634823415, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
+  movingSprite: {fileID: -267136586, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
+  thrustAudio: {fileID: -1833045201217608448}
 --- !u!114 &5714898865605090925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,7 +388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 125a157cd7922cd4599e051d2ea3def4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2796619716121448930
+--- !u!114 &-8099567843576523108
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -392,14 +397,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7439988089582373684}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1644998580f4bfa48a1e45f2a11cd266, type: 3}
+  m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 2
-  turnSpeed: 4
-  defaultSprite: {fileID: 1634823415, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
-  movingSprite: {fileID: -267136586, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
-  thrustAudio: {fileID: -1833045201217608448}
 --- !u!82 &-1833045201217608448
 AudioSource:
   m_ObjectHideFlags: 0

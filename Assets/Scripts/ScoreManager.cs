@@ -62,6 +62,9 @@ public class ScoreManager : MonoBehaviour
                 CheckForExtraLife(player4Score, 1);
                 player4ScoreText.text = "P4 Score: " + player4Score;
                 break;
+            default:
+                Debug.Log("Saucer Destroyed Asteroid");
+                break;
         }
     }
 

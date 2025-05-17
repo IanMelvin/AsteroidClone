@@ -7,14 +7,11 @@ using Random = UnityEngine.Random;
 public class UFOMovement : MonoBehaviour
 {
     [SerializeField] float ufoSpeed;
-    [SerializeField] bool randomAttacking;
 
     Vector2 movementDirection = Vector2.zero;
     Rigidbody2D rigidbody_2D;
 
     bool isPaused = false;
-
-    GameObject target;
 
     private void OnEnable()
     {

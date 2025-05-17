@@ -19,6 +19,10 @@ public class ScoreHolder : MonoBehaviour
         {
             SentOutScore(1);
         }
+        if (collision.CompareTag("Saucer"))
+        {
+            SentOutScore(-1);
+        }
     }
 
     public void SentOutScore(int playerIndex)
