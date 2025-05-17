@@ -41,6 +41,8 @@ public class UFOHealth : MonoBehaviour
         OnSaucerDestroyed?.Invoke();
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         gameObject.GetComponent<CircleCollider2D>().enabled = false;
+        GetComponent<UFOAttack>().enabled = false;
+        GetComponent<UFOMovement>().enabled = false;
         audioSource.clip = explosionAudio;
         audioSource.Play();
         pSystem.Play();

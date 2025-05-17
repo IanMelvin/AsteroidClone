@@ -18,7 +18,7 @@ public class UFOMovement : MonoBehaviour
     {
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
         rigidbody_2D = GetComponent<Rigidbody2D>();
-        movementDirection = new Vector2(-1,0);
+        if (movementDirection == Vector2.zero) movementDirection = new Vector2(transform.position.x > 0 ? -1 : 1,0);
         StartCoroutine("AdjustMovementDirection");
     }
 
@@ -54,8 +54,11 @@ public class UFOMovement : MonoBehaviour
         if (!isPaused) 
         {
             Vector2 screenPosition = Camera.main.WorldToScreenPoint(transform.position);
-            Debug.Log(screenPosition);
-            if((screenPosition.x >= Screen.width+20 && rigidbody_2D.velocity.x > 0) || (screenPosition.x <= -20 && rigidbody_2D.velocity.x < 0)) Destroy(gameObject);
+            if ((screenPosition.x >= Screen.width + 20 && rigidbody_2D.velocity.x > 0) || (screenPosition.x <= -20 && rigidbody_2D.velocity.x < 0))
+            {
+                UFOHealth.OnSaucerDestroyed?.Invoke();
+                Destroy(gameObject);
+            }
         }
     }
 

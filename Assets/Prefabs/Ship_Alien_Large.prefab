@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51fabf4e78d45fb44b2d86fdd5c34986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firingDelay: 0.95
+  firingDelay: 1
   firingRadius: 0.6
   projectilePrefab: {fileID: 8175163017496030900, guid: 1b2176d16f0bda640a3475890f55bc28, type: 3}
   randomAttacking: 1

@@ -11,10 +11,12 @@ public class UFOAttack : MonoBehaviour
 
     GameObject[] players;
     bool isPaused = false;
+    bool accuracyImprovementMilestoneReached = false;
 
     private void OnEnable()
     {
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        ScoreManager.OnAccuracyImprovementMilestone += ImprovedAccuracyMilestoneReached;
         players = GameObject.FindGameObjectsWithTag("Player");
         StartCoroutine("Fire");
     }
@@ -22,11 +24,17 @@ public class UFOAttack : MonoBehaviour
     private void OnDisable()
     {
         PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        ScoreManager.OnAccuracyImprovementMilestone -= ImprovedAccuracyMilestoneReached;
     }
 
     private void SetPauseState(bool pauseState)
     {
         isPaused = pauseState;
+    }
+
+    void ImprovedAccuracyMilestoneReached()
+    {
+        accuracyImprovementMilestoneReached = true;
     }
 
     IEnumerator Fire()
@@ -42,7 +50,7 @@ public class UFOAttack : MonoBehaviour
                 else
                 {
                     direction = players[Random.Range(0, players.Length)].transform.position - transform.position;
-                    direction += new Vector2(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
+                    if(!accuracyImprovementMilestoneReached) direction += new Vector2(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
                     direction = direction.normalized;
                 }
                 spawnPosition += direction * firingRadius;
