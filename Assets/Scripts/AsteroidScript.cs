@@ -32,7 +32,7 @@ public class AsteroidScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Projectile") || collision.CompareTag("Player"))
+        if (collision.CompareTag("Projectile") || collision.CompareTag("Player") || collision.CompareTag("Saucer"))
         {
             if (asteroidNextSizeDown != null)
             {

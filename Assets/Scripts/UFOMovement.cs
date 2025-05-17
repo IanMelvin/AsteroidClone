@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class UFOMovement : MonoBehaviour
 {
     [SerializeField] float ufoSpeed;
+    [SerializeField] float timeBetweenDirectionChecks = 0.75f;
 
     Vector2 movementDirection = Vector2.zero;
     Rigidbody2D rigidbody_2D;
@@ -16,16 +17,14 @@ public class UFOMovement : MonoBehaviour
     private void OnEnable()
     {
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        rigidbody_2D = GetComponent<Rigidbody2D>();
+        movementDirection = new Vector2(-1,0);
+        StartCoroutine("AdjustMovementDirection");
     }
 
     private void OnDisable()
     {
         PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
-    }
-
-    private void Start()
-    {
-        rigidbody_2D = GetComponent<Rigidbody2D>();
     }
 
     void FixedUpdate()
@@ -36,6 +35,8 @@ public class UFOMovement : MonoBehaviour
             rigidbody_2D.velocity = targetVelocity;
         }
         else rigidbody_2D.velocity = Vector2.zero;
+
+        CheckIfDead();
     }
 
     private void SetPauseState(bool pauseState)
@@ -46,5 +47,27 @@ public class UFOMovement : MonoBehaviour
     public void SetMovementDirection(Vector2 newMovementDirection)
     {
         movementDirection = newMovementDirection;
+    }
+
+    private void CheckIfDead()
+    {
+        if (!isPaused) 
+        {
+            Vector2 screenPosition = Camera.main.WorldToScreenPoint(transform.position);
+            Debug.Log(screenPosition);
+            if((screenPosition.x >= Screen.width+20 && rigidbody_2D.velocity.x > 0) || (screenPosition.x <= -20 && rigidbody_2D.velocity.x < 0)) Destroy(gameObject);
+        }
+    }
+
+    IEnumerator AdjustMovementDirection()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(timeBetweenDirectionChecks);
+            if(!isPaused)
+            {
+                movementDirection = new Vector2(movementDirection.x, Random.Range(-1, 2));
+            }
+        }      
     }
 }

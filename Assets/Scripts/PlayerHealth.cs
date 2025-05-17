@@ -29,14 +29,14 @@ public class PlayerHealth : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Asteroid") || collision.CompareTag("Projectile"))
+        if (collision.CompareTag("Asteroid") || collision.CompareTag("Projectile") || collision.CompareTag("Player") || collision.CompareTag("Saucer"))
         {
             if (isOneHit && !isDead)
             {
                 Debug.Log("Dead");
                 isDead = true;
                 //Activate Death particles / sound here
-                if (collision.CompareTag("Projectile")) explosionAudio?.Play();
+                explosionAudio?.Play();
                 pSystem?.Play();
                 OnPlayerDeath?.Invoke(playerIndex);
                 //gameObject.SetActive(false);

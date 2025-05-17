@@ -1203,6 +1203,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   largeAsteroidPrefab: {fileID: 6742729582480775299, guid: 5eddd86fb961910458e2edd568879f72, type: 3}
+  largeSaucerPrefab: {fileID: 8052315933898247232, guid: 654aab8b87fd9f54d80520019444d93c, type: 3}
+  smallSaucerPrefab: {fileID: 8052315933898247232, guid: 610896b29b770a24182a74f58d68d82a, type: 3}
   timeBetweenWaves: 2
 --- !u!114 &1084719160
 MonoBehaviour:

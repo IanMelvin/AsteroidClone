@@ -18,6 +18,8 @@ public class WaveSpawner : MonoBehaviour
     public static Action OnWaveEnded;
 
     [SerializeField] GameObject largeAsteroidPrefab;
+    [SerializeField] GameObject largeSaucerPrefab;
+    [SerializeField] GameObject smallSaucerPrefab;
     //[SerializeField] float distanceFromEdge_Min = -2.0f;
     //[SerializeField] float distanceFromEdge_Max = 0.0f;
     [SerializeField] float timeBetweenWaves = 2.0f;

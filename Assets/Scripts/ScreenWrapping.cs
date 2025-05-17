@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class ScreenWrapping : MonoBehaviour
 {
+    [SerializeField] bool canScreenWrapXAxis = true;
+    [SerializeField] bool canScreenWrapYAxis = true;
+
     Rigidbody2D rigidbody_2D;
 
     // Start is called before the first frame update
@@ -31,19 +34,19 @@ public class ScreenWrapping : MonoBehaviour
         float topOfScreen = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height)).y;
         float bottomOfScreen = Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)).y;*/
 
-        if (screenPosition.x <= 0 && rigidbody_2D.velocity.x < 0)
+        if (screenPosition.x <= 0 && rigidbody_2D.velocity.x < 0 && canScreenWrapXAxis)
         {
             transform.position = new Vector2(rightAndBottomScreen.x, transform.position.y);
         }
-        else if (screenPosition.x >= Screen.width && rigidbody_2D.velocity.x > 0)
+        else if (screenPosition.x >= Screen.width && rigidbody_2D.velocity.x > 0 && canScreenWrapXAxis)
         {
             transform.position = new Vector2(leftAndTopScreen.x, transform.position.y);
         }
-        else if (screenPosition.y <= 0 && rigidbody_2D.velocity.y < 0)
+        else if (screenPosition.y <= 0 && rigidbody_2D.velocity.y < 0 && canScreenWrapYAxis)
         {
             transform.position = new Vector2(transform.position.x, rightAndBottomScreen.y);
         }
-        else if (screenPosition.y >= Screen.height && rigidbody_2D.velocity.y > 0)
+        else if (screenPosition.y >= Screen.height && rigidbody_2D.velocity.y > 0 && canScreenWrapYAxis)
         {
             transform.position = new Vector2(transform.position.x, leftAndTopScreen.y);
         }

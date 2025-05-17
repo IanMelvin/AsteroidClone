@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -2349205364865313985}
   - component: {fileID: -6320053208665225249}
   - component: {fileID: 4076003978061779834}
+  - component: {fileID: -8998505207477091018}
   - component: {fileID: 2040691527267588128}
   - component: {fileID: 2851096304128416901}
   - component: {fileID: -1389499425480213045}
@@ -142,7 +143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 432e2724f3ac01543859699ffa830695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ufoSpeed: 0
+  ufoSpeed: 2
+  timeBetweenDirectionChecks: 1
 --- !u!114 &4076003978061779834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,6 +161,19 @@ MonoBehaviour:
   firingRadius: 0.5
   projectilePrefab: {fileID: 8175163017496030900, guid: 1b2176d16f0bda640a3475890f55bc28, type: 3}
   randomAttacking: 0
+--- !u!114 &-8998505207477091018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8052315933898247232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d2b2c583d0110f4782190dc40b868ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  explosionAudio: {fileID: 8300000, guid: c0c0bf73992a7014491bbae6cf3385db, type: 3}
 --- !u!114 &2040691527267588128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,6 +199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canScreenWrapXAxis: 0
+  canScreenWrapYAxis: 1
 --- !u!82 &-1389499425480213045
 AudioSource:
   m_ObjectHideFlags: 0
