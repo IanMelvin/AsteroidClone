@@ -15,6 +15,10 @@ public class ScoreHolder : MonoBehaviour
         {
             SentOutScore(collision.gameObject.GetComponent<ProjectileScript>().GetShooterIndex());
         }
+        if (collision.CompareTag("Player"))
+        {
+            SentOutScore(1);
+        }
     }
 
     public void SentOutScore(int playerIndex)

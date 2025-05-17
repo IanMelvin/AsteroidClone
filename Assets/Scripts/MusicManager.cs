@@ -17,7 +17,6 @@ public class MusicManager : MonoBehaviour
         WaveSpawner.OnWaveStarted += StartMusic;
         WaveSpawner.OnWaveEnded += StopMusic;
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
-        StartMusic();
     }
     private void OnDisable()
     {
