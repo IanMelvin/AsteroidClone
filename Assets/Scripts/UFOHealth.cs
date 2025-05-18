@@ -11,17 +11,16 @@ public class UFOHealth : MonoBehaviour
     ParticleSystem pSystem;
     bool isOneHit = true;
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
+        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
         audioSource = GetComponent<AudioSource>();
         pSystem = GetComponent<ParticleSystem>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -34,6 +33,12 @@ public class UFOHealth : MonoBehaviour
                 StartCoroutine(DestroySaucer());
             }
         }
+    }
+
+    void SetPauseState(bool pauseState)
+    {
+        if(pauseState) audioSource.Pause();
+        else audioSource.UnPause();
     }
 
     IEnumerator DestroySaucer()

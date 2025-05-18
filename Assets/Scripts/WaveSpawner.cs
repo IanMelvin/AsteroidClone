@@ -35,6 +35,7 @@ public class WaveSpawner : MonoBehaviour
     Vector3 bottomLeft;
     Vector3 topLeft;
     Vector3 bottomRight;
+    bool isPaused = false;
     bool onlySmallSaucer = false;
 
     Camera playerCam;
@@ -43,6 +44,7 @@ public class WaveSpawner : MonoBehaviour
     {
         AsteroidScript.OnAsteroidBorn += AddNewAsteroid;
         AsteroidScript.OnAsteroidBroken += UpdateWaveStatus;
+        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
         ScoreManager.OnSmallSaucerOnlyMilestone += SmallSaucerOnlyMilestoneReached;
         UFOHealth.OnSaucerDestroyed += StartNewSaucerTimer;
     }
@@ -51,6 +53,7 @@ public class WaveSpawner : MonoBehaviour
     {
         AsteroidScript.OnAsteroidBorn -= AddNewAsteroid;
         AsteroidScript.OnAsteroidBroken -= UpdateWaveStatus;
+        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
         ScoreManager.OnSmallSaucerOnlyMilestone -= SmallSaucerOnlyMilestoneReached;
         UFOHealth.OnSaucerDestroyed -= StartNewSaucerTimer;
     }
@@ -76,7 +79,7 @@ public class WaveSpawner : MonoBehaviour
             Instantiate(largeAsteroidPrefab, SpawnLocation(SpawnDirections.TOP, SpawnDirections.BOTTOM, SpawnDirections.LEFT, SpawnDirections.RIGHT), Quaternion.identity);
         }
 
-        StartCoroutine(SaucerSpawnTimer(10));
+        StartCoroutine(SaucerSpawnTimer(35));
         OnWaveStarted?.Invoke();
     }
 
@@ -100,7 +103,11 @@ public class WaveSpawner : MonoBehaviour
 
     IEnumerator DelayedStartOfWave(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        for (int i = 0; i < delay; i++)
+        {
+            if (isPaused) yield return new WaitUntil(() => isPaused == false);
+            else yield return new WaitForSeconds(1);
+        }
         StartWave();
     }
 
@@ -153,6 +160,11 @@ public class WaveSpawner : MonoBehaviour
         return asteroids;
     }
 
+    void SetPauseState(bool pauseState)
+    {
+        isPaused = pauseState;
+    }
+
     void SmallSaucerOnlyMilestoneReached()
     {
         onlySmallSaucer = true;
@@ -178,7 +190,19 @@ public class WaveSpawner : MonoBehaviour
     IEnumerator SaucerSpawnTimer(int delay)
     {
         Debug.Log("Started Spawn timer");
-        yield return new WaitForSeconds(delay);
+        for(int i = 0; i < delay; i++)
+        {
+            if (isPaused)
+            {
+                Debug.Log("Game Is Paused");
+                yield return new WaitUntil(() => isPaused == false);
+            }
+            else
+            {
+                Debug.Log("Game is unpaused");
+                yield return new WaitForSeconds(1);
+            }
+        }
         Debug.Log("Spawned Saucer");
         Instantiate(GetSaucerPrefab(), GetSaucerSpawnPos(), transform.rotation).GetComponent<UFOMovement>();
         activeSaucers++;

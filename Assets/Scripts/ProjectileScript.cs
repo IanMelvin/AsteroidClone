@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class ProjectileScript : MonoBehaviour
 {
-    public static Action OnProjectilesDespawned;
+    public static Action<int> OnProjectilesDespawned;
 
     [SerializeField] float speed;
     [SerializeField] float damage;
@@ -50,7 +50,7 @@ public class ProjectileScript : MonoBehaviour
         if (collision.CompareTag("Asteroid"))
         {
             StopAllCoroutines();
-            OnProjectilesDespawned?.Invoke();
+            OnProjectilesDespawned?.Invoke(shooter);
             Destroy(gameObject);
         }
     }
@@ -63,7 +63,7 @@ public class ProjectileScript : MonoBehaviour
     IEnumerator LifeSpan()
     {
         yield return new WaitForSeconds(lifeSpan);
-        OnProjectilesDespawned?.Invoke();
+        OnProjectilesDespawned?.Invoke(shooter);
         Destroy(gameObject);
     }
 

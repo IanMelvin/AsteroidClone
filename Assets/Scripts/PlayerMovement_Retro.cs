@@ -119,16 +119,16 @@ public class PlayerMovement_Retro : MonoBehaviour
     {
         if ((isPaused || isHyperspacing || isDead) && context.phase == InputActionPhase.Started) return;
 
-        if (context.phase != InputActionPhase.Canceled) rotationDirection = 1;
-        else rotationDirection = 0;
+        if (context.phase == InputActionPhase.Started) rotationDirection = 1;
+        else if (context.phase == InputActionPhase.Canceled) rotationDirection = 0;
     }
 
     public void OnRightRotation(InputAction.CallbackContext context)
     {
         if ((isPaused || isHyperspacing || isDead) && context.phase == InputActionPhase.Started) return;
 
-        if (context.phase != InputActionPhase.Canceled) rotationDirection = -1;
-        else rotationDirection = 0;
+        if (context.phase == InputActionPhase.Started) rotationDirection = -1;
+        else if (context.phase == InputActionPhase.Canceled) rotationDirection = 0;
     }
 
     public void OnPaused()
@@ -152,6 +152,8 @@ public class PlayerMovement_Retro : MonoBehaviour
     {
         isPaused = pauseState;
         if(!isPaused) rigidbody_2D.velocity = prePauseVelocity;
+        if(isPaused && isMoving) thrustAudio.Pause();
+        if(!isPaused && isMoving) thrustAudio.UnPause();
     }
 
     private void SetDeathState(int playerIndex)

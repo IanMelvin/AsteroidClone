@@ -11,17 +11,25 @@ public class MusicManager : MonoBehaviour
     float timeBetweenBeats = 1.0f;
     float elapsedTime = 0.0f;
     bool isPaused = false;
+    int numPlayers = 0;
+    int numDeadPlayers = 0;
 
     private void OnEnable()
     {
         WaveSpawner.OnWaveStarted += StartMusic;
         WaveSpawner.OnWaveEnded += StopMusic;
+        PlayerHealth.OnPlayerDeath += CheckIfPauseMusic;
+        HealthManager.OnPlayerRespawn += CheckIfUnPauseMusic;
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+
+        numPlayers = GameObject.FindGameObjectsWithTag("Player").Length;
     }
     private void OnDisable()
     {
         WaveSpawner.OnWaveStarted -= StartMusic;
         WaveSpawner.OnWaveEnded -= StopMusic;
+        PlayerHealth.OnPlayerDeath -= CheckIfPauseMusic;
+        HealthManager.OnPlayerRespawn -= CheckIfUnPauseMusic;
         PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
     }
 
@@ -45,6 +53,18 @@ public class MusicManager : MonoBehaviour
     void SetPauseState(bool pausedState)
     {
         isPaused = pausedState;
+    }
+
+    void CheckIfPauseMusic(int integer)
+    {
+        numDeadPlayers++;
+        if (numDeadPlayers == numPlayers) isPaused = true;
+    }
+
+    void CheckIfUnPauseMusic(int integer)
+    {
+        numDeadPlayers--;
+        isPaused = false;
     }
 
     IEnumerator PlayMusic()

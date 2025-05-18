@@ -79,10 +79,13 @@ public class PlayerAttack : MonoBehaviour
         isHyperspacing = hyperspaceStatus;
     }
 
-    private void RemoveActiveProjectile()
+    private void RemoveActiveProjectile(int shooterIndex)
     {
-        numActiveProjectiles--;
-        if (numActiveProjectiles < maxNumActiveProjectiles) reachedMaxProjectiles = false;
+        if(shooterIndex == playerIndex)
+        {
+            numActiveProjectiles--;
+            if (numActiveProjectiles < maxNumActiveProjectiles) reachedMaxProjectiles = false;
+        }
     }
 
     private void ToggleDeathState(int playerIndex)

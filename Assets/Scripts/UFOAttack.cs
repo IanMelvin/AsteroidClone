@@ -50,7 +50,8 @@ public class UFOAttack : MonoBehaviour
                 else
                 {
                     direction = players[Random.Range(0, players.Length)].transform.position - transform.position;
-                    if(!accuracyImprovementMilestoneReached) direction += new Vector2(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
+                    if(!accuracyImprovementMilestoneReached) direction += new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f));
+                    else direction += new Vector2(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
                     direction = direction.normalized;
                 }
                 spawnPosition += direction * firingRadius;
