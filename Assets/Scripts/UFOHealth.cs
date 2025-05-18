@@ -10,6 +10,7 @@ public class UFOHealth : MonoBehaviour
     AudioSource audioSource;
     ParticleSystem pSystem;
     bool isOneHit = true;
+    bool isPaused = false;
 
     private void OnEnable()
     {
@@ -37,8 +38,17 @@ public class UFOHealth : MonoBehaviour
 
     void SetPauseState(bool pauseState)
     {
-        if(pauseState) audioSource.Pause();
-        else audioSource.UnPause();
+        isPaused = pauseState;
+        if (isPaused)
+        {
+            if (audioSource.isPlaying) audioSource.Pause();
+            if (pSystem.isPlaying) pSystem.Pause();
+        }
+        else
+        {
+            audioSource.UnPause();
+            if (pSystem.isPaused) pSystem.Play();
+        }
     }
 
     IEnumerator DestroySaucer()
@@ -49,8 +59,8 @@ public class UFOHealth : MonoBehaviour
         GetComponent<UFOAttack>().enabled = false;
         GetComponent<UFOMovement>().enabled = false;
         audioSource.clip = explosionAudio;
-        audioSource.Play();
-        pSystem.Play();
+        audioSource?.Play();
+        pSystem?.Play();
         yield return new WaitForSeconds(audioSource.clip.length);
         Destroy(gameObject);
     }

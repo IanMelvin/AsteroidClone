@@ -91,6 +91,16 @@ public class AsteroidScript : MonoBehaviour
     private void SetPauseState(bool pauseState)
     {
         isPaused = pauseState;
+        if (isPaused)
+        {
+            if (explosionAudio.isPlaying) explosionAudio.Pause();
+            if (pSystem.isPlaying) pSystem.Pause();
+        }
+        else
+        {
+            explosionAudio.UnPause();
+            if (pSystem.isPaused) pSystem.Play();
+        }
     }
 
     public Vector2 GetMovementDirection()
@@ -103,8 +113,8 @@ public class AsteroidScript : MonoBehaviour
         OnAsteroidBroken?.Invoke(this);
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         gameObject.GetComponent<CircleCollider2D>().enabled = false;
-        explosionAudio.Play();
-        pSystem.Play();
+        explosionAudio?.Play();
+        pSystem?.Play();
         yield return new WaitForSeconds(explosionAudio.clip.length);
         Destroy(gameObject);
     }

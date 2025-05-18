@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.VirtualTexturing;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -11,12 +10,14 @@ public class PlayerHealth : MonoBehaviour
     ParticleSystem pSystem;
     bool isOneHit = true;
     bool isDead = false;
+    bool isPaused = false;
 
     int playerIndex = 1;
 
     private void OnEnable()
     {
         HealthManager.OnPlayerRespawn += Respawn;
+        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
         isDead = false;
         explosionAudio = GetComponent<AudioSource>();
         pSystem = GetComponent<ParticleSystem>();
@@ -25,6 +26,7 @@ public class PlayerHealth : MonoBehaviour
     private void OnDisable()
     {
         HealthManager.OnPlayerRespawn -= Respawn;
+        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -44,6 +46,21 @@ public class PlayerHealth : MonoBehaviour
                 gameObject.GetComponent<PolygonCollider2D>().enabled = false;
                 //gameObject.GetComponent<PlayerMovement_Retro>().enabled = false;
             }
+        }
+    }
+
+    private void SetPauseState(bool pauseState)
+    {
+        isPaused = pauseState;
+        if (isPaused)
+        {
+            if (explosionAudio.isPlaying) explosionAudio.Pause();
+            if (pSystem.isPlaying) pSystem.Pause();
+        }
+        else
+        {
+            explosionAudio.UnPause();
+            if (pSystem.isPaused) pSystem.Play();
         }
     }
 

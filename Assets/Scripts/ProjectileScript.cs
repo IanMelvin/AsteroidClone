@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.VirtualTexturing;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class ProjectileScript : MonoBehaviour
@@ -14,6 +15,7 @@ public class ProjectileScript : MonoBehaviour
     [SerializeField] float lifeSpan;
 
     Vector2 movementDirection;
+    AudioSource projectileAudio;
     Rigidbody2D rigidbody_2D;
     int shooter = 0;
     bool isPaused;
@@ -21,6 +23,7 @@ public class ProjectileScript : MonoBehaviour
     private void OnEnable()
     {
         PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        projectileAudio?.GetComponent<AudioSource>();
     }
 
     private void OnDisable()
@@ -58,6 +61,14 @@ public class ProjectileScript : MonoBehaviour
     private void SetPauseState(bool pauseState)
     {
         isPaused = pauseState;
+        if (isPaused)
+        {
+            if (projectileAudio.isPlaying) projectileAudio.Pause();
+        }
+        else
+        {
+            projectileAudio.UnPause();
+        }
     }
 
     IEnumerator LifeSpan()
