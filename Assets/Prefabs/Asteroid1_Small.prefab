@@ -146,7 +146,7 @@ MonoBehaviour:
   - {fileID: 40942259, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
   - {fileID: 1708322506, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
   asteroidNextSizeDown: {fileID: 0}
-  speed: 4
+  speed: 3.25
   explosionAudio: {fileID: -4657107557043296385}
 --- !u!114 &-1980791075633311995
 MonoBehaviour:
@@ -160,6 +160,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canScreenWrapXAxis: 1
+  canScreenWrapYAxis: 1
 --- !u!114 &8168571188833854649
 MonoBehaviour:
   m_ObjectHideFlags: 0

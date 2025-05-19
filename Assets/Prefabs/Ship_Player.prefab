@@ -247,9 +247,9 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2796619716121448930}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_TargetAssemblyTypeName: PlayerMovement_Retro, Assembly-CSharp
         m_MethodName: OnPaused
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -356,8 +356,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1644998580f4bfa48a1e45f2a11cd266, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 2
-  turnSpeed: 4
+  playerSpeed: 8
+  turnSpeed: 5
   defaultSprite: {fileID: 1634823415, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
   movingSprite: {fileID: -267136586, guid: 0edfff0005124cf4e974674d667f638f, type: 3}
   thrustAudio: {fileID: -1833045201217608448}
@@ -400,6 +400,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canScreenWrapXAxis: 1
+  canScreenWrapYAxis: 1
 --- !u!82 &-1833045201217608448
 AudioSource:
   m_ObjectHideFlags: 0

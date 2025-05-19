@@ -9,6 +9,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private int maxNumActiveProjectiles = 4;
 
+    Rigidbody2D rigidbody_2D;
     Transform projectileSpawn;
     bool fireDelayElapsed = true;
     bool reachedMaxProjectiles = false;
@@ -48,6 +49,7 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         projectileSpawn = transform.GetChild(0);
+        rigidbody_2D = GetComponent<Rigidbody2D>();
     }
 
     public void OnShoot(InputAction.CallbackContext context)
@@ -61,7 +63,12 @@ public class PlayerAttack : MonoBehaviour
     {
         fireDelayElapsed = false;
         ProjectileScript projectile = Instantiate(projectilePrefab, projectileSpawn.position, transform.rotation).GetComponent<ProjectileScript>();
-        projectile.SetDirection(new Vector2(Mathf.Sin((transform.rotation.eulerAngles.z + 90.0f) * Mathf.Deg2Rad), Mathf.Cos((transform.rotation.eulerAngles.z - 90.0f) * Mathf.Deg2Rad)));
+        
+        Vector2 baseDirection = new Vector2(Mathf.Sin((transform.rotation.eulerAngles.z + 90.0f) * Mathf.Deg2Rad), Mathf.Cos((transform.rotation.eulerAngles.z - 90.0f) * Mathf.Deg2Rad)).normalized;
+        baseDirection *= projectile.GetMaxProjectileSpeed();
+        projectile.SetVelocityAndInitalForce(rigidbody_2D.velocity, baseDirection);
+
+        //projectile.SetDirection(baseDirection);
         projectile.SetShooter(playerIndex);
         numActiveProjectiles++;
         if (numActiveProjectiles >= maxNumActiveProjectiles) reachedMaxProjectiles = true;

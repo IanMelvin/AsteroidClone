@@ -131,9 +131,9 @@ public class PlayerMovement_Retro : MonoBehaviour
         else if (context.phase == InputActionPhase.Canceled) rotationDirection = 0;
     }
 
-    public void OnPaused()
+    public void OnPaused(InputAction.CallbackContext context)
     {
-        OnPauseButtonPressed?.Invoke();
+        if (context.phase == InputActionPhase.Started) OnPauseButtonPressed?.Invoke();
     }
 
     public void OnHyperspace(InputAction.CallbackContext context)

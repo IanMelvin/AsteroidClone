@@ -10,6 +10,7 @@ public class UFOAttack : MonoBehaviour
     [SerializeField] bool randomAttacking;
 
     GameObject[] players;
+    Rigidbody2D rigidbody_2D;
     bool isPaused = false;
     bool accuracyImprovementMilestoneReached = false;
 
@@ -18,6 +19,7 @@ public class UFOAttack : MonoBehaviour
         UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         ScoreManager.OnAccuracyImprovementMilestone += ImprovedAccuracyMilestoneReached;
         players = GameObject.FindGameObjectsWithTag("Player");
+        rigidbody_2D = GetComponent<Rigidbody2D>();
         StartCoroutine("Fire");
     }
 
@@ -57,7 +59,8 @@ public class UFOAttack : MonoBehaviour
                 spawnPosition += direction * firingRadius;
 
                 ProjectileScript projectile = Instantiate(projectilePrefab, spawnPosition, transform.rotation).GetComponent<ProjectileScript>();
-                projectile.SetDirection(direction);
+                projectile.SetVelocityAndInitalForce(rigidbody_2D.velocity, direction * projectile.GetMaxProjectileSpeed());
+                //projectile.SetDirection(direction);
                 projectile.SetShooter(-1);
             }
         }

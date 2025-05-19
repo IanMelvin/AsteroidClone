@@ -20,8 +20,7 @@ public class UniversalPauseManager : MonoBehaviour
 
     private void OnApplicationFocus(bool focus)
     {
-        pauseState = !focus;
-        if (!focus) OnPauseStateChanged?.Invoke(pauseState);
+        if (!focus && !pauseState) FireOffPauseEvent();
     }
 
     private void FireOffPauseEvent()

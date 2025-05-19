@@ -15,6 +15,7 @@ public class ProjectileScript : MonoBehaviour
     [SerializeField] float lifeSpan;
 
     Vector2 movementDirection;
+    Vector2 prePauseVelocity;
     AudioSource projectileAudio;
     Rigidbody2D rigidbody_2D;
     int shooter = 0;
@@ -42,8 +43,11 @@ public class ProjectileScript : MonoBehaviour
     {
         if (!isPaused)
         {
-            Vector2 targetVelocity = movementDirection * speed;
-            rigidbody_2D.velocity = targetVelocity;
+            //Vector2 targetVelocity = movementDirection * speed;
+            //rigidbody_2D.velocity = targetVelocity;
+            //if(rigidbody_2D.velocity.magnitude > speed) rigidbody_2D.velocity = movementDirection * speed;
+            prePauseVelocity = rigidbody_2D.velocity;
+            //Debug.Log($"Projecile speed: {rigidbody_2D.velocity.magnitude}");
         }
         else rigidbody_2D.velocity = Vector2.zero;
     }
@@ -67,6 +71,7 @@ public class ProjectileScript : MonoBehaviour
         }
         else
         {
+            rigidbody_2D.velocity = prePauseVelocity;
             projectileAudio?.UnPause();
         }
     }
@@ -88,10 +93,26 @@ public class ProjectileScript : MonoBehaviour
         return movementDirection;
     }
 
+    public void SetVelocityAndInitalForce(Vector2 baseVelocity, Vector2 initalForce)
+    {
+        if(!rigidbody_2D) rigidbody_2D = GetComponent<Rigidbody2D>();
+        rigidbody_2D.velocity = baseVelocity;
+        movementDirection = initalForce / speed;
+        rigidbody_2D.AddForce(initalForce, ForceMode2D.Impulse);
+    }
+
     public void SetShooter(int shooterIndex)
     {
         shooter = shooterIndex;
     }
 
-    public int GetShooterIndex() { return shooter; }
+    public int GetShooterIndex()
+    {
+        return shooter;
+    }
+
+    public float GetMaxProjectileSpeed()
+    {
+        return speed;
+    }
 }
