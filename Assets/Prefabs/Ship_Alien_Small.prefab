@@ -36,7 +36,7 @@ Transform:
   m_GameObject: {fileID: 8052315933898247232}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firingDelay: 1
-  firingRadius: 0.5
+  firingRadius: 0.4
   projectilePrefab: {fileID: 8175163017496030900, guid: 1b2176d16f0bda640a3475890f55bc28, type: 3}
   randomAttacking: 0
 --- !u!114 &-8998505207477091018

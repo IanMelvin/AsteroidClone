@@ -153,6 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0984ebbbd63cbb34799179ae481eaeab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canScreenWrapXAxis: 1
+  canScreenWrapYAxis: 1
 --- !u!82 &4023515452702421599
 AudioSource:
   m_ObjectHideFlags: 0
