@@ -36,12 +36,14 @@ public class AsteroidScript : MonoBehaviour
         {
             if (asteroidNextSizeDown != null)
             {
-                Instantiate(asteroidNextSizeDown, transform.position + new Vector3(Random.Range(0.0f, 0.2f), Random.Range(0.0f, 0.3f), 0.0f), Quaternion.identity)
+                float slope = (collision.transform.position.y - transform.position.y) / (collision.transform.position.x - transform.position.x);
+                Vector2 crossProd = slope > 0f ?  Vector3.Cross(rigidbody_2D.velocity, collision.attachedRigidbody.velocity) : Vector3.Cross(collision.attachedRigidbody.velocity, rigidbody_2D.velocity);// + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0);
+                Instantiate(asteroidNextSizeDown, transform.position + new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.3f, 0.3f), 0.0f), Quaternion.identity)
                     .GetComponent<AsteroidScript>()
-                    .SetMovementDirection(GetMovementDirection() + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f)));
-                Instantiate(asteroidNextSizeDown, transform.position + new Vector3(Random.Range(0.0f, 0.2f), Random.Range(0.0f, 0.3f), 0.0f), Quaternion.identity)
+                    .SetMovementDirection((crossProd + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f))).normalized * Random.Range(0.8f, 1.2f));//GetMovementDirection() + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f)));
+                Instantiate(asteroidNextSizeDown, transform.position + new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.3f, 0.3f), 0.0f), Quaternion.identity)
                     .GetComponent<AsteroidScript>()
-                    .SetMovementDirection(GetMovementDirection() + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f)));
+                    .SetMovementDirection((crossProd + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f))).normalized * Random.Range(0.8f, 1.2f));//GetMovementDirection() + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f)));
             }
             StartCoroutine(DestroyAsteroid());
         }
