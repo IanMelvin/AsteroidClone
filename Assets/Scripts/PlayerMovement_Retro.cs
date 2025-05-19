@@ -97,7 +97,7 @@ public class PlayerMovement_Retro : MonoBehaviour
 
         if (context.phase == InputActionPhase.Started)
         {
-            smoothTime = 0.5f;
+            smoothTime = 1f;
             changeSpritesCoroutine = StartCoroutine(ChangeSprite());
             isMoving = true;
             thrustAudio.Play();
@@ -108,7 +108,7 @@ public class PlayerMovement_Retro : MonoBehaviour
         {
             isMoving = false;
             inputMovement = Vector2.zero;
-            smoothTime = 1.5f;
+            smoothTime = 2f;
             if (changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
             spriteRenderer.sprite = defaultSprite;
             thrustAudio.Stop();
@@ -170,6 +170,7 @@ public class PlayerMovement_Retro : MonoBehaviour
         if(this.playerIndex == playerIndex)
         {
             isDead = false;
+            StopAllMovement();
         }
     }
 
@@ -178,6 +179,7 @@ public class PlayerMovement_Retro : MonoBehaviour
         isMoving = false;
         rigidbody_2D.velocity = Vector2.zero;
         inputMovement = Vector2.zero;
+        prePauseVelocity = Vector2.zero;
         smoothTime = 0.0f;
         if (changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
         spriteRenderer.sprite = defaultSprite;

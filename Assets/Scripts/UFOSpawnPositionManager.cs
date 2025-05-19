@@ -26,7 +26,7 @@ public class UFOSpawnPositionManager : MonoBehaviour
     {
         topLeft = playerCam.ScreenToWorldPoint(new Vector3(0, Screen.height));
         bottomRight = playerCam.ScreenToWorldPoint(new Vector3(Screen.width, 0));
-        Debug.Log($"{topLeft} : {bottomRight}");
+        //Debug.Log($"{topLeft} : {bottomRight}");
 
         foreach (Transform t in leftSideSpawnpoints)
         {

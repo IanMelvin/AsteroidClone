@@ -8,10 +8,10 @@ public class HealthManager : MonoBehaviour
 {
     public static Action<int> OnPlayerRespawn;
 
-    [SerializeField] TextMeshProUGUI player1LifeText;
-    [SerializeField] TextMeshProUGUI player2LifeText;
-    [SerializeField] TextMeshProUGUI player3LifeText;
-    [SerializeField] TextMeshProUGUI player4LifeText;
+    [SerializeField] TextMeshProUGUI[] playerLifeText;
+    //[SerializeField] TextMeshProUGUI player2LifeText;
+    //[SerializeField] TextMeshProUGUI player3LifeText;
+    //[SerializeField] TextMeshProUGUI player4LifeText;
 
     [SerializeField] GameObject player1;
     [SerializeField] GameObject player2;
@@ -36,7 +36,7 @@ public class HealthManager : MonoBehaviour
 
         if (player1) UpdateLifeUI(1);
         if (player2) UpdateLifeUI(2);
-        if (player3) UpdateLifeUI(4);
+        if (player3) UpdateLifeUI(3);
         if (player4) UpdateLifeUI(4);
     }
 
@@ -50,7 +50,8 @@ public class HealthManager : MonoBehaviour
     {
         if (playerLives[playerIndex - 1] < 0) return;
 
-        switch (playerIndex)
+        playerLifeText[playerIndex - 1].text = $"x {playerLives[playerIndex - 1]}";
+        /*switch (playerIndex)
         {
             case 1:
                 player1LifeText.text = $"x {playerLives[playerIndex-1]}";
@@ -64,7 +65,7 @@ public class HealthManager : MonoBehaviour
             case 4:
                 player4LifeText.text = $"x {playerLives[playerIndex - 1]}";
                 break;
-        }
+        }*/
     }
 
     IEnumerator RespawnDelay(float delay, int playerIndex)

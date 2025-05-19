@@ -1266,10 +1266,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0168b40545705224980276c81dc063df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1LifeText: {fileID: 407587709}
-  player2LifeText: {fileID: 714972321}
-  player3LifeText: {fileID: 930652661}
-  player4LifeText: {fileID: 1764709783}
+  playerLifeText:
+  - {fileID: 407587709}
+  - {fileID: 714972321}
+  - {fileID: 930652661}
+  - {fileID: 1764709783}
   player1: {fileID: 1444885779}
   player2: {fileID: 0}
   player3: {fileID: 0}
