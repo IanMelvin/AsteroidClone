@@ -15,7 +15,7 @@ public class UFOAttack : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         ScoreManager.OnAccuracyImprovementMilestone += ImprovedAccuracyMilestoneReached;
         players = GameObject.FindGameObjectsWithTag("Player");
         StartCoroutine("Fire");
@@ -23,7 +23,7 @@ public class UFOAttack : MonoBehaviour
 
     private void OnDisable()
     {
-        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
         ScoreManager.OnAccuracyImprovementMilestone -= ImprovedAccuracyMilestoneReached;
     }
 

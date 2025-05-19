@@ -20,7 +20,7 @@ public class MusicManager : MonoBehaviour
         WaveSpawner.OnWaveEnded += StopMusic;
         PlayerHealth.OnPlayerDeath += CheckIfPauseMusic;
         HealthManager.OnPlayerRespawn += CheckIfUnPauseMusic;
-        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
 
         numPlayers = GameObject.FindGameObjectsWithTag("Player").Length;
     }
@@ -30,7 +30,7 @@ public class MusicManager : MonoBehaviour
         WaveSpawner.OnWaveEnded -= StopMusic;
         PlayerHealth.OnPlayerDeath -= CheckIfPauseMusic;
         HealthManager.OnPlayerRespawn -= CheckIfUnPauseMusic;
-        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
     }
 
     void StartMusic()

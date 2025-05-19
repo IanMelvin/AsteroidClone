@@ -14,14 +14,14 @@ public class UFOHealth : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         audioSource = GetComponent<AudioSource>();
         pSystem = GetComponent<ParticleSystem>();
     }
 
     private void OnDisable()
     {
-        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

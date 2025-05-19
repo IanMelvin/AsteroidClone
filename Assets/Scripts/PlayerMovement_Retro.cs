@@ -7,8 +7,8 @@ using Random = UnityEngine.Random;
 
 public class PlayerMovement_Retro : MonoBehaviour
 {
-    public static Action<bool> OnPauseMenuActive;
-    public static Action<bool> OnHyperspaceActive;
+    public static Action OnPauseButtonPressed;
+    public static Action<int, bool> OnHyperspaceActive;
 
     [SerializeField] private float playerSpeed;
     [SerializeField] private float turnSpeed;
@@ -41,14 +41,14 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     private void OnEnable()
     {
-        OnPauseMenuActive += SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         HealthManager.OnPlayerRespawn += Respawn;
         PlayerHealth.OnPlayerDeath += SetDeathState;
     }
 
     private void OnDisable()
     {
-        OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
         HealthManager.OnPlayerRespawn -= Respawn;
         PlayerHealth.OnPlayerDeath -= SetDeathState;
         if(changeSpritesCoroutine != null) StopCoroutine(changeSpritesCoroutine);
@@ -133,7 +133,7 @@ public class PlayerMovement_Retro : MonoBehaviour
 
     public void OnPaused()
     {
-        OnPauseMenuActive?.Invoke(!isPaused);
+        OnPauseButtonPressed?.Invoke();
     }
 
     public void OnHyperspace(InputAction.CallbackContext context)
@@ -142,7 +142,7 @@ public class PlayerMovement_Retro : MonoBehaviour
 
         if (context.phase == InputActionPhase.Started)
         {
-            OnHyperspaceActive?.Invoke(true);
+            OnHyperspaceActive?.Invoke(playerIndex, true);
             isHyperspacing = true;
             StartCoroutine(HyperspaceAbility());
         }
@@ -212,6 +212,6 @@ public class PlayerMovement_Retro : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().enabled = true;
         gameObject.GetComponent<PolygonCollider2D>().enabled = true;
         isHyperspacing = false;
-        OnHyperspaceActive?.Invoke(false);
+        OnHyperspaceActive?.Invoke(playerIndex, false);
     }
 }

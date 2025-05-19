@@ -16,7 +16,7 @@ public class UFOMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         rigidbody_2D = GetComponent<Rigidbody2D>();
         if (movementDirection == Vector2.zero) movementDirection = new Vector2(transform.position.x > 0 ? -1 : 1,0);
         StartCoroutine("AdjustMovementDirection");
@@ -24,7 +24,7 @@ public class UFOMovement : MonoBehaviour
 
     private void OnDisable()
     {
-        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
     }
 
     void FixedUpdate()

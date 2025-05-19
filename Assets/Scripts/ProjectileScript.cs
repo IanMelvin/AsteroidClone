@@ -22,19 +22,19 @@ public class ProjectileScript : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
-        projectileAudio?.GetComponent<AudioSource>();
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
     }
 
     private void OnDisable()
     {
-        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
     }
 
     void Start()
     {
         rigidbody_2D = GetComponent<Rigidbody2D>();
-        
+        projectileAudio = GetComponent<AudioSource>();
+
         StartCoroutine("LifeSpan");
     }
 
@@ -63,11 +63,11 @@ public class ProjectileScript : MonoBehaviour
         isPaused = pauseState;
         if (isPaused)
         {
-            if (projectileAudio.isPlaying) projectileAudio.Pause();
+            if (projectileAudio.isPlaying) projectileAudio?.Pause();
         }
         else
         {
-            projectileAudio.UnPause();
+            projectileAudio?.UnPause();
         }
     }
 

@@ -17,7 +17,7 @@ public class PlayerHealth : MonoBehaviour
     private void OnEnable()
     {
         HealthManager.OnPlayerRespawn += Respawn;
-        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         isDead = false;
         explosionAudio = GetComponent<AudioSource>();
         pSystem = GetComponent<ParticleSystem>();
@@ -26,7 +26,7 @@ public class PlayerHealth : MonoBehaviour
     private void OnDisable()
     {
         HealthManager.OnPlayerRespawn -= Respawn;
-        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

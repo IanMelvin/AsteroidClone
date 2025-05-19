@@ -44,7 +44,7 @@ public class WaveSpawner : MonoBehaviour
     {
         AsteroidScript.OnAsteroidBorn += AddNewAsteroid;
         AsteroidScript.OnAsteroidBroken += UpdateWaveStatus;
-        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         ScoreManager.OnSmallSaucerOnlyMilestone += SmallSaucerOnlyMilestoneReached;
         UFOHealth.OnSaucerDestroyed += StartNewSaucerTimer;
     }
@@ -53,7 +53,7 @@ public class WaveSpawner : MonoBehaviour
     {
         AsteroidScript.OnAsteroidBorn -= AddNewAsteroid;
         AsteroidScript.OnAsteroidBroken -= UpdateWaveStatus;
-        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
         ScoreManager.OnSmallSaucerOnlyMilestone -= SmallSaucerOnlyMilestoneReached;
         UFOHealth.OnSaucerDestroyed -= StartNewSaucerTimer;
     }

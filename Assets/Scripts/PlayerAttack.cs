@@ -23,7 +23,7 @@ public class PlayerAttack : MonoBehaviour
     {
         HealthManager.OnPlayerRespawn += Respawn;
         PlayerMovement.OnPauseMenuActive += SetPauseState;
-        PlayerMovement_Retro.OnPauseMenuActive += SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         PlayerMovement_Retro.OnHyperspaceActive += SetHyperspaceStatus;
         PlayerHealth.OnPlayerDeath += ToggleDeathState;
         ProjectileScript.OnProjectilesDespawned += RemoveActiveProjectile;
@@ -36,7 +36,7 @@ public class PlayerAttack : MonoBehaviour
     {
         HealthManager.OnPlayerRespawn -= Respawn;
         PlayerMovement.OnPauseMenuActive -= SetPauseState;
-        PlayerMovement_Retro.OnPauseMenuActive -= SetPauseState;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
         PlayerMovement_Retro.OnHyperspaceActive -= SetHyperspaceStatus;
         PlayerHealth.OnPlayerDeath -= ToggleDeathState;
         ProjectileScript.OnProjectilesDespawned -= RemoveActiveProjectile;
@@ -74,9 +74,9 @@ public class PlayerAttack : MonoBehaviour
         isPaused = pauseState;
     }
 
-    private void SetHyperspaceStatus(bool hyperspaceStatus)
+    private void SetHyperspaceStatus(int playerIndex, bool hyperspaceStatus)
     {
-        isHyperspacing = hyperspaceStatus;
+        if(this.playerIndex == playerIndex) isHyperspacing = hyperspaceStatus;
     }
 
     private void RemoveActiveProjectile(int shooterIndex)
