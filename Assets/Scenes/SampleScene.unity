@@ -1137,6 +1137,7 @@ GameObject:
   - component: {fileID: 1084719158}
   - component: {fileID: 1084719164}
   - component: {fileID: 1084719165}
+  - component: {fileID: 1084719166}
   - component: {fileID: 1084719161}
   - component: {fileID: 1084719163}
   m_Layer: 0
@@ -1492,6 +1493,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d01a1e2451e8f1e4ca7eaecde84bb732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1084719166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084719155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c04369acdf138ab4288d61ab401b40f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftSideSpawnpoints:
+  - {fileID: 691051885}
+  - {fileID: 1790779524}
+  - {fileID: 620964818}
+  - {fileID: 1446345956}
+  rightSideSpawnpoints:
+  - {fileID: 2094460004}
+  - {fileID: 624741959}
+  - {fileID: 1505339075}
+  - {fileID: 715313877}
 --- !u!1 &1191666723
 GameObject:
   m_ObjectHideFlags: 0
@@ -2329,7 +2352,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
