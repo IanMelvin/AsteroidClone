@@ -72,14 +72,12 @@ public class MusicManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(timeBetweenBeats);
-            if (!isPaused)
-            {
-                elapsedTime += timeBetweenBeats;
-                if (audioSource.clip.name != beatOne.name) audioSource.clip = beatOne;
-                else audioSource.clip = beatTwo;
-                audioSource.Play();
-                UpdateTimeBetweenBeats();
-            }
+            yield return new WaitUntil(() => isPaused == false);
+            elapsedTime += timeBetweenBeats;
+            if (audioSource.clip.name != beatOne.name) audioSource.clip = beatOne;
+            else audioSource.clip = beatTwo;
+            audioSource.Play();
+            UpdateTimeBetweenBeats();
         }
     }
 }

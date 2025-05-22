@@ -37,6 +37,10 @@ public class WaveSpawner : MonoBehaviour
     Vector3 bottomRight;
     bool isPaused = false;
     bool onlySmallSaucer = false;
+    bool startOfWaveTimerOn = false;
+    float startOfWaveTimer = 0.0f;
+    bool saucerSpawnTimerOn = false;
+    float saucerSpawnTimer = 0.0f;
 
     Camera playerCam;
 
@@ -66,6 +70,28 @@ public class WaveSpawner : MonoBehaviour
         StartWave();
     }
 
+    void FixedUpdate()
+    {
+        if (!isPaused)
+        {
+            if (startOfWaveTimer > 0.0f) startOfWaveTimer -= Time.deltaTime;
+            else if (startOfWaveTimerOn)
+            {
+                startOfWaveTimerOn = false;
+                StartWave();
+            }
+
+            if (saucerSpawnTimer > 0.0f) saucerSpawnTimer -= Time.deltaTime;
+            else if (saucerSpawnTimerOn)
+            {
+                saucerSpawnTimerOn = false;
+                Debug.Log("Spawned Saucer");
+                Instantiate(GetSaucerPrefab(), GetSaucerSpawnPos(), transform.rotation).GetComponent<UFOMovement>();
+                activeSaucers++;
+            }
+        }
+    }
+
     void StartWave()
     {
         asteroids.Clear();
@@ -79,7 +105,9 @@ public class WaveSpawner : MonoBehaviour
             Instantiate(largeAsteroidPrefab, SpawnLocation(SpawnDirections.TOP, SpawnDirections.BOTTOM, SpawnDirections.LEFT, SpawnDirections.RIGHT), Quaternion.identity);
         }
 
-        StartCoroutine(SaucerSpawnTimer(35));
+        saucerSpawnTimer = 35;
+        saucerSpawnTimerOn = true;
+        Debug.Log("Started Spawn timer");
         OnWaveStarted?.Invoke();
     }
 
@@ -96,19 +124,11 @@ public class WaveSpawner : MonoBehaviour
         if(currentNumberOfDestroyedAsteroids == totalNumberOfAsteroidsInWave && activeSaucers == 0)
         {
             EndWave();
-            StopAllCoroutines();
-            StartCoroutine(DelayedStartOfWave(timeBetweenWaves));
+            saucerSpawnTimerOn = false;
+            saucerSpawnTimer = 0.0f;
+            startOfWaveTimer = timeBetweenWaves;
+            startOfWaveTimerOn = true;
         }
-    }
-
-    IEnumerator DelayedStartOfWave(float delay)
-    {
-        for (int i = 0; i < delay; i++)
-        {
-            if (isPaused) yield return new WaitUntil(() => isPaused == false);
-            else yield return new WaitForSeconds(1);
-        }
-        StartWave();
     }
 
     void EndWave()
@@ -173,7 +193,21 @@ public class WaveSpawner : MonoBehaviour
     void StartNewSaucerTimer()
     {
         activeSaucers--;
-        StartCoroutine(SaucerSpawnTimer(11 - currentWave + Random.Range(0,4)));
+
+        if (currentNumberOfDestroyedAsteroids == totalNumberOfAsteroidsInWave && activeSaucers == 0)
+        {
+            EndWave();
+            saucerSpawnTimerOn = false;
+            saucerSpawnTimer = 0.0f;
+            startOfWaveTimer = timeBetweenWaves;
+            startOfWaveTimerOn = true;
+        }
+        else
+        {
+            saucerSpawnTimer = 11 - currentWave + Random.Range(0, 4);
+            saucerSpawnTimerOn = true;
+            Debug.Log("Started Spawn timer");
+        }
     }
 
     GameObject GetSaucerPrefab()
@@ -185,26 +219,5 @@ public class WaveSpawner : MonoBehaviour
     Vector3 GetSaucerSpawnPos()
     {
         return saucerSpawnPoints[Random.Range(0,saucerSpawnPoints.Length)].position;
-    }
-
-    IEnumerator SaucerSpawnTimer(int delay)
-    {
-        Debug.Log("Started Spawn timer");
-        for(int i = 0; i < delay; i++)
-        {
-            if (isPaused)
-            {
-                Debug.Log("Game Is Paused");
-                yield return new WaitUntil(() => isPaused == false);
-            }
-            else
-            {
-                Debug.Log("Game is unpaused");
-                yield return new WaitForSeconds(1);
-            }
-        }
-        Debug.Log("Spawned Saucer");
-        Instantiate(GetSaucerPrefab(), GetSaucerSpawnPos(), transform.rotation).GetComponent<UFOMovement>();
-        activeSaucers++;
     }
 }

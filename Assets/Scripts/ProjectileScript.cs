@@ -9,7 +9,6 @@ using UnityEngine.Rendering.VirtualTexturing;
 public class ProjectileScript : MonoBehaviour
 {
     public static Action<int> OnProjectilesDespawned;
-
     [SerializeField] float speed;
     [SerializeField] float damage;
     [SerializeField] float lifeSpan;
@@ -19,7 +18,9 @@ public class ProjectileScript : MonoBehaviour
     AudioSource projectileAudio;
     Rigidbody2D rigidbody_2D;
     int shooter = 0;
-    bool isPaused;
+    bool isPaused = false;
+    bool destructionTimerOn = false;
+    float destructionTimer = 0.0f;
 
     private void OnEnable()
     {
@@ -36,27 +37,34 @@ public class ProjectileScript : MonoBehaviour
         rigidbody_2D = GetComponent<Rigidbody2D>();
         projectileAudio = GetComponent<AudioSource>();
 
-        StartCoroutine("LifeSpan");
+        destructionTimer = lifeSpan;
+        destructionTimerOn = true;
     }
 
     void FixedUpdate()
     {
         if (!isPaused)
         {
-            //Vector2 targetVelocity = movementDirection * speed;
-            //rigidbody_2D.velocity = targetVelocity;
-            //if(rigidbody_2D.velocity.magnitude > speed) rigidbody_2D.velocity = movementDirection * speed;
             prePauseVelocity = rigidbody_2D.velocity;
             //Debug.Log($"Projecile speed: {rigidbody_2D.velocity.magnitude}");
+
+            if (destructionTimer > 0.0f) destructionTimer -= Time.deltaTime;
+            else if (destructionTimerOn)
+            {
+                destructionTimerOn = false;
+                OnProjectilesDespawned?.Invoke(shooter);
+                Destroy(gameObject);
+            }
         }
         else rigidbody_2D.velocity = Vector2.zero;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Asteroid"))
+        if (collision.CompareTag("Asteroid") || collision.CompareTag("Saucer"))
         {
-            StopAllCoroutines();
+            destructionTimerOn = false;
+            destructionTimer = 0.0f;
             OnProjectilesDespawned?.Invoke(shooter);
             Destroy(gameObject);
         }
@@ -74,13 +82,6 @@ public class ProjectileScript : MonoBehaviour
             rigidbody_2D.velocity = prePauseVelocity;
             projectileAudio?.UnPause();
         }
-    }
-
-    IEnumerator LifeSpan()
-    {
-        yield return new WaitForSeconds(lifeSpan);
-        OnProjectilesDespawned?.Invoke(shooter);
-        Destroy(gameObject);
     }
 
     public void SetDirection(Vector2 newMovementDirection)

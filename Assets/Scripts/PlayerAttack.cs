@@ -17,6 +17,8 @@ public class PlayerAttack : MonoBehaviour
     bool isHyperspacing = false;
     bool isDead = false;
     int numActiveProjectiles = 0;
+    bool firingDelayTimerOn = false;
+    float firingDelayTimer = 0.0f;
 
     int playerIndex = 1;
 
@@ -52,14 +54,27 @@ public class PlayerAttack : MonoBehaviour
         rigidbody_2D = GetComponent<Rigidbody2D>();
     }
 
+    private void FixedUpdate()
+    {
+        if (!isPaused)
+        {
+            if (firingDelayTimer > 0.0f) firingDelayTimer -= Time.deltaTime;
+            else if (firingDelayTimerOn)
+            {
+                firingDelayTimerOn = false;
+                fireDelayElapsed = true;
+            }
+        }
+    }
+
     public void OnShoot(InputAction.CallbackContext context)
     {
         if (isPaused || isHyperspacing || isDead) return;
 
-        if (context.phase != InputActionPhase.Canceled && fireDelayElapsed && !reachedMaxProjectiles) StartCoroutine("Fire");
+        if (context.phase != InputActionPhase.Canceled && fireDelayElapsed && !reachedMaxProjectiles) Fire();
     }
 
-    IEnumerator Fire()
+    private void Fire()
     {
         fireDelayElapsed = false;
         ProjectileScript projectile = Instantiate(projectilePrefab, projectileSpawn.position, transform.rotation).GetComponent<ProjectileScript>();
@@ -72,8 +87,9 @@ public class PlayerAttack : MonoBehaviour
         projectile.SetShooter(playerIndex);
         numActiveProjectiles++;
         if (numActiveProjectiles >= maxNumActiveProjectiles) reachedMaxProjectiles = true;
-        yield return new WaitForSeconds(firingDelay);
-        fireDelayElapsed = true;
+        firingDelayTimer = firingDelay;
+        firingDelayTimerOn = true;
+        //yield return new WaitForSeconds(firingDelay);
     }
 
     private void SetPauseState(bool pauseState)
@@ -90,7 +106,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if(shooterIndex == playerIndex)
         {
-            numActiveProjectiles--;
+            if (numActiveProjectiles > 0) numActiveProjectiles--;
             if (numActiveProjectiles < maxNumActiveProjectiles) reachedMaxProjectiles = false;
         }
     }

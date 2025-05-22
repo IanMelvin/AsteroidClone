@@ -192,11 +192,9 @@ public class PlayerMovement_Retro : MonoBehaviour
         while(true)
         {
             yield return new WaitForSeconds(0.05f);
-            if(!isPaused)
-            {
-                if (spriteRenderer.sprite == movingSprite) spriteRenderer.sprite = defaultSprite;
-                else spriteRenderer.sprite = movingSprite;
-            }
+            yield return new WaitUntil(() => isPaused == false);
+            if (spriteRenderer.sprite == movingSprite) spriteRenderer.sprite = defaultSprite;
+            else spriteRenderer.sprite = movingSprite;
         }
     }
 
@@ -210,6 +208,8 @@ public class PlayerMovement_Retro : MonoBehaviour
         float y = Random.Range(bottomLeft.y - distanceFromEdge, topLeft.y + distanceFromEdge);
 
         yield return new WaitForSeconds(1.0f);
+        yield return new WaitUntil(() => isPaused == false);
+
         transform.position = new Vector2(x, y);
         gameObject.GetComponent<SpriteRenderer>().enabled = true;
         gameObject.GetComponent<PolygonCollider2D>().enabled = true;

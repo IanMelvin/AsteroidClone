@@ -13,13 +13,16 @@ public class UFOMovement : MonoBehaviour
     Rigidbody2D rigidbody_2D;
 
     bool isPaused = false;
+    bool movementTimerOn = false;
+    float movementTimer = 0.0f;
 
     private void OnEnable()
     {
         UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         rigidbody_2D = GetComponent<Rigidbody2D>();
         if (movementDirection == Vector2.zero) movementDirection = new Vector2(transform.position.x > 0 ? -1 : 1,0);
-        StartCoroutine("AdjustMovementDirection");
+        movementTimer = timeBetweenDirectionChecks;
+        movementTimerOn = true;
     }
 
     private void OnDisable()
@@ -33,6 +36,13 @@ public class UFOMovement : MonoBehaviour
         {
             Vector2 targetVelocity = movementDirection * ufoSpeed;
             rigidbody_2D.velocity = targetVelocity;
+
+            if (movementTimer > 0.0f) movementTimer -= Time.deltaTime;
+            else if (movementTimerOn)
+            {
+                movementTimerOn = false;
+                AdjustMovementDirection();
+            }
         }
         else rigidbody_2D.velocity = Vector2.zero;
 
@@ -62,15 +72,10 @@ public class UFOMovement : MonoBehaviour
         }
     }
 
-    IEnumerator AdjustMovementDirection()
+    private void AdjustMovementDirection()
     {
-        while(true)
-        {
-            yield return new WaitForSeconds(timeBetweenDirectionChecks);
-            if(!isPaused)
-            {
-                movementDirection = new Vector2(movementDirection.x, Random.Range(-1, 2));
-            }
-        }      
+        movementDirection = new Vector2(movementDirection.x, Random.Range(-1, 2));
+        movementTimer = timeBetweenDirectionChecks;
+        movementTimerOn = true;    
     }
 }

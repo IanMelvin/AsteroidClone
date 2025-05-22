@@ -11,6 +11,8 @@ public class UFOHealth : MonoBehaviour
     ParticleSystem pSystem;
     bool isOneHit = true;
     bool isPaused = false;
+    bool destructionTimerOn = false;
+    float destructionTimer = 0.0f;
 
     private void OnEnable()
     {
@@ -31,7 +33,20 @@ public class UFOHealth : MonoBehaviour
             if (isOneHit)
             {
                 Debug.Log("Saucer Down");
-                StartCoroutine(DestroySaucer());
+                DestroySaucer();
+            }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (!isPaused)
+        {
+            if (destructionTimer > 0.0f) destructionTimer -= Time.deltaTime;
+            else if (destructionTimerOn)
+            {
+                destructionTimerOn = false;
+                Destroy(gameObject);
             }
         }
     }
@@ -51,7 +66,7 @@ public class UFOHealth : MonoBehaviour
         }
     }
 
-    IEnumerator DestroySaucer()
+    private void DestroySaucer()
     {
         OnSaucerDestroyed?.Invoke();
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
@@ -61,7 +76,7 @@ public class UFOHealth : MonoBehaviour
         audioSource.clip = explosionAudio;
         audioSource?.Play();
         pSystem?.Play();
-        yield return new WaitForSeconds(audioSource.clip.length);
-        Destroy(gameObject);
+        destructionTimer = audioSource.clip.length;
+        destructionTimerOn = true;
     }
 }

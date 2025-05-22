@@ -25,11 +25,19 @@ public class HealthManager : MonoBehaviour
 
     WaveSpawner spawner;
     int[] playerLives;
+    bool isPaused = false;
+    bool extraLifeAudioOn = false;
+    bool respawnTimerOn = false;
+    bool objectsInRespawnRadius = false;
+    float extraLifeAudioTimer = 0.0f;
+    float respawnTimer = 0.0f;
+    float respawnTimeKeeper = 0.0f;
 
     private void OnEnable()
     {
         PlayerHealth.OnPlayerDeath += RemoveALife;
         ScoreManager.OnExtraLifeAwarded += AwardExtraLife;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
         playerLives = new int[] { defaultNumLives, defaultNumLives, defaultNumLives, defaultNumLives };
         spawner = GetComponent<WaveSpawner>();
         if (!extraLifeAudio) extraLifeAudio = GetComponent<AudioSource>();
@@ -44,6 +52,34 @@ public class HealthManager : MonoBehaviour
     {
         PlayerHealth.OnPlayerDeath -= RemoveALife;
         ScoreManager.OnExtraLifeAwarded -= AwardExtraLife;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
+    }
+
+    void FixedUpdate()
+    {
+        if (!isPaused)
+        {
+            if (extraLifeAudioTimer > 0.0f) extraLifeAudioTimer -= Time.deltaTime;
+            else if (extraLifeAudioOn)
+            {
+                extraLifeAudioOn = false;
+                extraLifeAudio.Stop();
+            }
+
+            if (respawnTimer > 0.0f) respawnTimer -= Time.deltaTime;
+            else if (respawnTimerOn)
+            {
+                respawnTimerOn = false;
+                RespawnDelay(1);
+            }
+        }
+    }
+
+    private void SetPauseState(bool pauseState)
+    {
+        isPaused = pauseState;
+        if (isPaused && extraLifeAudioOn) extraLifeAudio.Pause();
+        if (!isPaused && extraLifeAudioOn) extraLifeAudio.UnPause();
     }
 
     void UpdateLifeUI(int playerIndex)
@@ -68,39 +104,33 @@ public class HealthManager : MonoBehaviour
         }*/
     }
 
-    IEnumerator RespawnDelay(float delay, int playerIndex)
+    private void RespawnDelay(int playerIndex)
     {
-        float timer = 0;
-        yield return new WaitForSeconds(delay);
-        timer += delay;
-
-        bool inRadius = true;
-        while(inRadius)
+        objectsInRespawnRadius = false;
+        for (int i = 0; i < spawner.GetAsteroids().Count; i++)
         {
-            inRadius = false;
-            for (int i = 0; i < spawner.GetAsteroids().Count; i++)
+            if ((Vector3.zero - spawner.GetAsteroids()[i].transform.position).magnitude < spawnRadiusSafeZone)
             {
-                if ((Vector3.zero - spawner.GetAsteroids()[i].transform.position).magnitude < spawnRadiusSafeZone)
-                {
-                    inRadius = true;
-                    break;
-                }
-            }
-
-            if (inRadius)
-            {
-                timer += delay / 2.0f;
-                yield return new WaitForSeconds(delay / 2.0f);
+                objectsInRespawnRadius = true;
+                break;
             }
         }
+        
+        if (objectsInRespawnRadius)
+        {
+            respawnTimer = respawnDelay / 2.0f;
+            respawnTimerOn = true;
+            respawnTimeKeeper += respawnTimer;
+            return;
+        }
 
-        Debug.Log($"Respawn: {timer} seconds");
+        Debug.Log($"Respawn: {respawnTimeKeeper} seconds");
         OnPlayerRespawn?.Invoke(playerIndex);
     }
 
     void AwardExtraLife(int playerIndex)
     {
-        StartCoroutine("PlayExtraLifeAudio");
+        PlayExtraLifeAudio();
         playerLives[playerIndex - 1]++;
         UpdateLifeUI(playerIndex);
     }
@@ -111,14 +141,19 @@ public class HealthManager : MonoBehaviour
         UpdateLifeUI(playerIndex);
 
         if (playerLives[playerIndex - 1] <= 0) Debug.Log("GameOver");
-        else StartCoroutine(RespawnDelay(respawnDelay, 1));
+        else
+        {
+            respawnTimer = respawnDelay;
+            respawnTimerOn = true;
+            respawnTimeKeeper += respawnTimer;
+        }
     }
 
-    IEnumerator PlayExtraLifeAudio()
+    private void PlayExtraLifeAudio()
     {
+        extraLifeAudioOn = true;
         extraLifeAudio.Play();
         extraLifeAudio.loop = true;
-        yield return new WaitForSeconds(extraLifeAudio.clip.length * 12);
-        extraLifeAudio.Stop();
+        extraLifeAudioTimer = extraLifeAudio.clip.length * 12f;
     }
 }

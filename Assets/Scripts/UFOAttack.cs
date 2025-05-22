@@ -13,6 +13,8 @@ public class UFOAttack : MonoBehaviour
     Rigidbody2D rigidbody_2D;
     bool isPaused = false;
     bool accuracyImprovementMilestoneReached = false;
+    bool firingDelayTimerOn = false;
+    float firingDelayTimer = 0.0f;
 
     private void OnEnable()
     {
@@ -20,13 +22,27 @@ public class UFOAttack : MonoBehaviour
         ScoreManager.OnAccuracyImprovementMilestone += ImprovedAccuracyMilestoneReached;
         players = GameObject.FindGameObjectsWithTag("Player");
         rigidbody_2D = GetComponent<Rigidbody2D>();
-        StartCoroutine("Fire");
+        firingDelayTimer = firingDelay;
+        firingDelayTimerOn = true;
     }
 
     private void OnDisable()
     {
         UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
         ScoreManager.OnAccuracyImprovementMilestone -= ImprovedAccuracyMilestoneReached;
+    }
+
+    private void FixedUpdate()
+    {
+        if (!isPaused)
+        {
+            if (firingDelayTimer > 0.0f) firingDelayTimer -= Time.deltaTime;
+            else if (firingDelayTimerOn)
+            {
+                firingDelayTimerOn = false;
+                Fire();
+            }
+        }
     }
 
     private void SetPauseState(bool pauseState)
@@ -39,30 +55,25 @@ public class UFOAttack : MonoBehaviour
         accuracyImprovementMilestoneReached = true;
     }
 
-    IEnumerator Fire()
+    private void Fire()
     {
-        while (true)
+        Vector2 spawnPosition = transform.position;
+        Vector2 direction;
+        if (randomAttacking) direction = Random.insideUnitCircle.normalized;
+        else
         {
-            yield return new WaitForSeconds(firingDelay);
-            if (!isPaused)
-            {
-                Vector2 spawnPosition = transform.position;
-                Vector2 direction;
-                if (randomAttacking) direction = Random.insideUnitCircle.normalized;
-                else
-                {
-                    direction = players[Random.Range(0, players.Length)].transform.position - transform.position;
-                    if(!accuracyImprovementMilestoneReached) direction += new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f));
-                    else direction += new Vector2(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
-                    direction = direction.normalized;
-                }
-                spawnPosition += direction * firingRadius;
-
-                ProjectileScript projectile = Instantiate(projectilePrefab, spawnPosition, transform.rotation).GetComponent<ProjectileScript>();
-                projectile.SetVelocityAndInitalForce(rigidbody_2D.velocity, direction * projectile.GetMaxProjectileSpeed());
-                //projectile.SetDirection(direction);
-                projectile.SetShooter(-1);
-            }
+            direction = players[Random.Range(0, players.Length)].transform.position - transform.position;
+            if(!accuracyImprovementMilestoneReached) direction += new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f));
+            else direction += new Vector2(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
+            direction = direction.normalized;
         }
+        spawnPosition += direction * firingRadius;
+
+        ProjectileScript projectile = Instantiate(projectilePrefab, spawnPosition, transform.rotation).GetComponent<ProjectileScript>();
+        projectile.SetVelocityAndInitalForce(rigidbody_2D.velocity, direction * projectile.GetMaxProjectileSpeed());
+        projectile.SetShooter(-1);
+
+        firingDelayTimer = firingDelay;
+        firingDelayTimerOn = true;
     }
 }

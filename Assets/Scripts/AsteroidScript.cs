@@ -17,8 +17,9 @@ public class AsteroidScript : MonoBehaviour
     Rigidbody2D rigidbody_2D;
     ParticleSystem pSystem;
     Vector2 movementDirection = Vector2.zero;
-
     bool isPaused = false;
+    bool destructionTimerOn = false;
+    float destructionTimer = 0.0f;
 
     private void OnEnable()
     {
@@ -45,7 +46,7 @@ public class AsteroidScript : MonoBehaviour
                     .GetComponent<AsteroidScript>()
                     .SetMovementDirection((crossProd + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f))).normalized * Random.Range(0.8f, 1.2f));//GetMovementDirection() + new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f)));
             }
-            StartCoroutine(DestroyAsteroid());
+            DestroyAsteroid();
         }
     }
 
@@ -70,6 +71,13 @@ public class AsteroidScript : MonoBehaviour
         {
             Vector2 targetVelocity = movementDirection * speed;
             rigidbody_2D.velocity = targetVelocity;
+
+            if (destructionTimer > 0.0f) destructionTimer -= Time.deltaTime;
+            else if (destructionTimerOn)
+            {
+                destructionTimerOn = false;
+                Destroy(gameObject);
+            }
         }
         else rigidbody_2D.velocity = Vector2.zero;
     }
@@ -110,14 +118,14 @@ public class AsteroidScript : MonoBehaviour
         return movementDirection;
     }
 
-    IEnumerator DestroyAsteroid()
+    private void DestroyAsteroid()
     {
         OnAsteroidBroken?.Invoke(this);
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
         gameObject.GetComponent<CircleCollider2D>().enabled = false;
         explosionAudio?.Play();
         pSystem?.Play();
-        yield return new WaitForSeconds(explosionAudio.clip.length);
-        Destroy(gameObject);
+        destructionTimer = explosionAudio.clip.length;
+        destructionTimerOn = true;
     }
 }
