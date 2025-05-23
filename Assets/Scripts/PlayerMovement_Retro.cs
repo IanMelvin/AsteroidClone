@@ -33,7 +33,7 @@ public class PlayerMovement_Retro : MonoBehaviour
     bool isPaused = false;
     bool isMoving = false;
     bool isHyperspacing = false;
-    bool isDead = false;
+    bool isDead = true;
 
     int playerIndex = 1;
 

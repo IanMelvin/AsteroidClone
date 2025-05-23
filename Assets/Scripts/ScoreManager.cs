@@ -3,25 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class ScoreManager : MonoBehaviour
 {
     public static Action<int> OnExtraLifeAwarded;
+    public static Action<int, int> OnTimeToSendOutPlayerScores;
     public static Action OnSmallSaucerOnlyMilestone;
     public static Action OnAccuracyImprovementMilestone;
-    [SerializeField] TextMeshProUGUI player1ScoreText;
-    [SerializeField] TextMeshProUGUI player2ScoreText;
-    [SerializeField] TextMeshProUGUI player3ScoreText;
-    [SerializeField] TextMeshProUGUI player4ScoreText;
+    [SerializeField] TextMeshProUGUI[] playerScoreText;
+    [SerializeField] TextMeshProUGUI highScoreText;
     [SerializeField] int numPointsPerExtraLife = 10000;
     [SerializeField] int numPointsBeforeOnlySmallSaucer = 10000;
     [SerializeField] int numPointsSmallSaucerAccuracyImprovement = 35000;
 
-    int player1Score = 0;
-    int player2Score = 0;
-    int player3Score = 0;
-    int player4Score = 0;
-
+    int[] playerScores = {-1,-1,-1,-1};
     int[] playerExtraLives = {0,0,0,0};
 
     bool tenThousandPointsAwarded = false;
@@ -29,66 +25,75 @@ public class ScoreManager : MonoBehaviour
 
     private void OnEnable()
     {
+        MenuManager.OnGameStarted += StartGame;
+        MenuManager.OnMainMenuOpen += Reset;
+        HealthManager.OnGameOver += GameOver;
         ScoreHolder.OnScoreSentOut += UpdatePlayerScore;
     }
 
     private void OnDisable()
     {
+        MenuManager.OnGameStarted -= StartGame;
+        MenuManager.OnMainMenuOpen -= Reset;
+        HealthManager.OnGameOver -= GameOver;
         ScoreHolder.OnScoreSentOut -= UpdatePlayerScore;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        player2ScoreText.gameObject.SetActive(false);
-        player3ScoreText.gameObject.SetActive(false);
-        player4ScoreText.gameObject.SetActive(false);
+        playerScores[0] = 0;
+        playerScoreText[2].enabled = false;
+        playerScoreText[3].enabled = false;
+    }
+
+    private void StartGame()
+    {
+        playerScoreText[1].enabled = false;
+    }
+
+    private void Reset()
+    {
+        playerScores[0] = 0;
+        playerScoreText[1].enabled = true;
+        UpdatePlayerScore(0, 1);
+    }
+
+    private void GameOver()
+    {
+        int biggestScore = 0;
+        for(int i = 0; i < playerScores.Length; i++)
+        {
+            if (playerScores[i] > biggestScore) biggestScore = playerScores[i];
+            if (playerScores[i] >= 0) OnTimeToSendOutPlayerScores(i+1, playerScores[i]);
+        }
+        if(int.Parse(highScoreText.text) < biggestScore) highScoreText.text = biggestScore.ToString("00");
     }
 
     private void UpdatePlayerScore(int score, int playerIndex)
     {
-        switch (playerIndex)
-        {
-            case 1:
-                player1Score += score;
-                CheckForMilestones(player1Score, 1);
-                player1ScoreText.text = "P1 Score: " + player1Score;
-                break;
-            case 2:
-                player2Score += score;
-                CheckForMilestones(player2Score, 1);
-                player2ScoreText.text = "P2 Score: " + player2Score;
-                break;
-            case 3:
-                player3Score += score;
-                CheckForMilestones(player3Score, 1);
-                player3ScoreText.text = "P3 Score: " + player3Score;
-                break;
-            case 4:
-                player4Score += score;
-                CheckForMilestones(player4Score, 1);
-                player4ScoreText.text = "P4 Score: " + player4Score;
-                break;
-            default:
-                break;
-        }
+        if (playerScoreText.Length <= playerIndex || playerIndex < 0 ) return;
+
+        playerScores[playerIndex - 1] += score;
+        playerScoreText[playerIndex - 1].text = playerScores[playerIndex - 1].ToString("00");
+        CheckForMilestones(playerIndex);
     }
 
-    private void CheckForMilestones(int playerScore, int playerIndex)
+    private void CheckForMilestones(int playerIndex)
     {
-        if(playerScore >= numPointsPerExtraLife * (playerExtraLives[playerIndex - 1] + 1))
+        if(playerScores[playerIndex - 1] >= numPointsPerExtraLife * (playerExtraLives[playerIndex - 1] + 1))
         {
             Debug.Log("Extra Life");
             playerExtraLives[playerIndex - 1]++;
             OnExtraLifeAwarded?.Invoke(playerIndex);
         }
-        if (playerScore >= numPointsBeforeOnlySmallSaucer && !tenThousandPointsAwarded)
+        if (playerScores[playerIndex - 1] >= numPointsBeforeOnlySmallSaucer && !tenThousandPointsAwarded)
         {
             Debug.Log("Switch to only small saucer");
             tenThousandPointsAwarded = true;
             OnSmallSaucerOnlyMilestone?.Invoke();
         }
-        if (playerScore > numPointsSmallSaucerAccuracyImprovement && !thirtyFiveThousandPointsAwarded)
+        if (playerScores[playerIndex - 1] > numPointsSmallSaucerAccuracyImprovement && !thirtyFiveThousandPointsAwarded)
         {
             Debug.Log("Improve small saucer accuracy");
             thirtyFiveThousandPointsAwarded = true;

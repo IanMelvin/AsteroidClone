@@ -15,7 +15,7 @@ public class PlayerAttack : MonoBehaviour
     bool reachedMaxProjectiles = false;
     bool isPaused = false;
     bool isHyperspacing = false;
-    bool isDead = false;
+    bool isDead = true;
     int numActiveProjectiles = 0;
     bool firingDelayTimerOn = false;
     float firingDelayTimer = 0.0f;

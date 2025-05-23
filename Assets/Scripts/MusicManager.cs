@@ -7,6 +7,7 @@ public class MusicManager : MonoBehaviour
     [SerializeField] AudioSource audioSource;
     [SerializeField] AudioClip beatOne;
     [SerializeField] AudioClip beatTwo;
+    [SerializeField] bool canStartMusic = false;
 
     float timeBetweenBeats = 1.0f;
     float elapsedTime = 0.0f;
@@ -18,26 +19,43 @@ public class MusicManager : MonoBehaviour
     {
         WaveSpawner.OnWaveStarted += StartMusic;
         WaveSpawner.OnWaveEnded += StopMusic;
+        MenuManager.OnGameStarted += StartGame;
         PlayerHealth.OnPlayerDeath += CheckIfPauseMusic;
         HealthManager.OnPlayerRespawn += CheckIfUnPauseMusic;
+        HealthManager.OnGameOver += StopGame;
         UniversalPauseManager.OnPauseStateChanged += SetPauseState;
-
-        numPlayers = GameObject.FindGameObjectsWithTag("Player").Length;
     }
     private void OnDisable()
     {
         WaveSpawner.OnWaveStarted -= StartMusic;
         WaveSpawner.OnWaveEnded -= StopMusic;
+        MenuManager.OnGameStarted -= StartGame;
         PlayerHealth.OnPlayerDeath -= CheckIfPauseMusic;
         HealthManager.OnPlayerRespawn -= CheckIfUnPauseMusic;
+        HealthManager.OnGameOver -= StopGame;
         UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
+    }
+
+    void StartGame()
+    {
+        numPlayers = GameObject.FindGameObjectsWithTag("Player").Length;
+        canStartMusic = true;
+    }
+
+    void StopGame()
+    {
+        canStartMusic = false;
+        StopMusic();
     }
 
     void StartMusic()
     {
-        timeBetweenBeats = 1.0f;
-        elapsedTime = 0.0f;
-        StartCoroutine("PlayMusic");
+        if (canStartMusic)
+        {
+            timeBetweenBeats = 1.0f;
+            elapsedTime = 0.0f;
+            StartCoroutine("PlayMusic");
+        }
     }
 
     void StopMusic()

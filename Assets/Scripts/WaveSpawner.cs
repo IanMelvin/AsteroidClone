@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 using Random = UnityEngine.Random;
 
 enum SpawnDirections
@@ -48,26 +47,30 @@ public class WaveSpawner : MonoBehaviour
     {
         AsteroidScript.OnAsteroidBorn += AddNewAsteroid;
         AsteroidScript.OnAsteroidBroken += UpdateWaveStatus;
-        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
+        HealthManager.OnGameOver += ClearBoard;
+        MenuManager.OnGameStarted += StartGame;
+        MenuManager.OnMainMenuOpen += StartWave;
         ScoreManager.OnSmallSaucerOnlyMilestone += SmallSaucerOnlyMilestoneReached;
         UFOHealth.OnSaucerDestroyed += StartNewSaucerTimer;
+        UniversalPauseManager.OnPauseStateChanged += SetPauseState;
     }
 
     private void OnDisable()
     {
         AsteroidScript.OnAsteroidBorn -= AddNewAsteroid;
         AsteroidScript.OnAsteroidBroken -= UpdateWaveStatus;
-        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
+        HealthManager.OnGameOver -= ClearBoard;
+        MenuManager.OnGameStarted -= StartGame;
+        MenuManager.OnMainMenuOpen -= StartWave;
         ScoreManager.OnSmallSaucerOnlyMilestone -= SmallSaucerOnlyMilestoneReached;
         UFOHealth.OnSaucerDestroyed -= StartNewSaucerTimer;
+        UniversalPauseManager.OnPauseStateChanged -= SetPauseState;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         playerCam = Camera.main;
-
-        StartWave();
     }
 
     void FixedUpdate()
@@ -92,6 +95,31 @@ public class WaveSpawner : MonoBehaviour
         }
     }
 
+    void StartGame()
+    {
+        ClearBoard();
+
+        startOfWaveTimer = timeBetweenWaves;
+        startOfWaveTimerOn = true;
+    }
+
+    void ClearBoard()
+    {
+        currentWave = 0;
+        currentNumberOfDestroyedAsteroids = 0;
+        totalNumberOfAsteroidsInWave = 0;
+        activeSaucers = 0;
+        saucerSpawnTimerOn = false;
+        saucerSpawnTimer = 0.0f;
+        GameObject saucer = GameObject.FindGameObjectWithTag("Saucer");
+        if (saucer) Destroy(saucer);
+
+        for (int i = asteroids.Count - 1; i >= 0; i--)
+        {
+            Destroy(asteroids[i].gameObject);
+        }
+    }
+
     void StartWave()
     {
         asteroids.Clear();
@@ -102,7 +130,7 @@ public class WaveSpawner : MonoBehaviour
 
         for (int i = 0; i < totalAsteroidsToSpawn; i++)
         {
-            Instantiate(largeAsteroidPrefab, SpawnLocation(SpawnDirections.TOP, SpawnDirections.BOTTOM, SpawnDirections.LEFT, SpawnDirections.RIGHT), Quaternion.identity);
+            Instantiate(largeAsteroidPrefab, SpawnLocation(SpawnDirections.TOP, SpawnDirections.BOTTOM, SpawnDirections.LEFT, SpawnDirections.RIGHT), Quaternion.identity).GetComponent<AsteroidScript>();
         }
 
         saucerSpawnTimer = 35;
@@ -140,6 +168,7 @@ public class WaveSpawner : MonoBehaviour
     
     private void DefineScreenValues()
     {
+        if(!playerCam) playerCam = Camera.main;
         cameraDistance = playerCam.nearClipPlane;
         bottomLeft = playerCam.ScreenToWorldPoint(new Vector3(0, 0, cameraDistance));
         topLeft = playerCam.ScreenToWorldPoint(new Vector3(0, Screen.height, cameraDistance));

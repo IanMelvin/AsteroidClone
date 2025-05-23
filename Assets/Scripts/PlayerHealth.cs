@@ -9,7 +9,7 @@ public class PlayerHealth : MonoBehaviour
     AudioSource explosionAudio;
     ParticleSystem pSystem;
     bool isOneHit = true;
-    bool isDead = false;
+    bool isDead = true;
     bool isPaused = false;
 
     int playerIndex = 1;
