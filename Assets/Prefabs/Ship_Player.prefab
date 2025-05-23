@@ -324,6 +324,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: da82c941-dbd8-44cb-9aff-fb2bc0af438b
     m_ActionName: Gameplay/Hyperspace[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2796619716121448930}
+        m_TargetAssemblyTypeName: PlayerMovement_Retro, Assembly-CSharp
+        m_MethodName: OnStartButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 61aa6aa7-86f6-49da-a02d-b4b343bec4f3
+    m_ActionName: Gameplay/Start[/Keyboard/enter]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard+Mouse
   m_DefaultActionMap: Gameplay

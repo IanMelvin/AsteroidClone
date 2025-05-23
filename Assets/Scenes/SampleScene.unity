@@ -1342,46 +1342,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_ActionId
-      value: 61aa6aa7-86f6-49da-a02d-b4b343bec4f3
-      objectReference: {fileID: 0}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_ActionName
-      value: Gameplay/Start[/Keyboard/enter]
-      objectReference: {fileID: 0}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1084719167}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnStartButton
-      objectReference: {fileID: 0}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MenuManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: -8441828843474607747, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
-      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: -2234646731873744271, guid: fc54251e33c946743be2ac7e8c93e4db, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -1457,6 +1417,7 @@ GameObject:
   - component: {fileID: 1084719159}
   - component: {fileID: 1084719160}
   - component: {fileID: 1084719158}
+  - component: {fileID: 1084719168}
   - component: {fileID: 1084719167}
   - component: {fileID: 1084719164}
   - component: {fileID: 1084719166}
@@ -1866,6 +1827,21 @@ MonoBehaviour:
   initialsEntryText: {fileID: 1202750350}
   leaderboardText: {fileID: 65318085}
   pauseMenu: {fileID: 0}
+--- !u!114 &1084719168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084719155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 961b8f9551dc6de4ba12124a60a8978e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leaderboardPromptText: {fileID: 1157562927}
+  initialsEntryText: {fileID: 1202750350}
+  leaderboardText: {fileID: 65318085}
 --- !u!1 &1157562925
 GameObject:
   m_ObjectHideFlags: 0
@@ -2338,7 +2314,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: _AA
+  m_text: A__
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e62959ac4671ecc47a68c9bcd3ab099e, type: 2}
   m_sharedMaterial: {fileID: -510220593539813393, guid: e62959ac4671ecc47a68c9bcd3ab099e, type: 2}

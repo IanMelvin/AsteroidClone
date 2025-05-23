@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -27,6 +24,7 @@ public class ScoreManager : MonoBehaviour
     {
         MenuManager.OnGameStarted += StartGame;
         MenuManager.OnMainMenuOpen += Reset;
+        LeaderboardManager.OnHighScoreLoaded += (int score) => highScoreText.text = score.ToString("00");
         HealthManager.OnGameOver += GameOver;
         ScoreHolder.OnScoreSentOut += UpdatePlayerScore;
     }
@@ -35,6 +33,7 @@ public class ScoreManager : MonoBehaviour
     {
         MenuManager.OnGameStarted -= StartGame;
         MenuManager.OnMainMenuOpen -= Reset;
+        LeaderboardManager.OnHighScoreLoaded -= (int score) => highScoreText.text = score.ToString("00");
         HealthManager.OnGameOver -= GameOver;
         ScoreHolder.OnScoreSentOut -= UpdatePlayerScore;
     }

@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 public class PlayerMovement_Retro : MonoBehaviour
 {
     public static Action OnPauseButtonPressed;
+    public static Action OnStartButtonPressed;
     public static Action<int, bool> OnHyperspaceActive;
 
     [SerializeField] private float playerSpeed;
@@ -148,6 +149,12 @@ public class PlayerMovement_Retro : MonoBehaviour
         }
     }
 
+    public void OnStartButton(InputAction.CallbackContext context)
+    {
+        if (isPaused) return;
+
+        if (context.phase == InputActionPhase.Started)  OnStartButtonPressed?.Invoke();
+    }
     private void SetPauseState(bool pauseState)
     {
         isPaused = pauseState;

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using TMPro;
 
 public class MenuManager : MonoBehaviour
@@ -18,6 +17,7 @@ public class MenuManager : MonoBehaviour
 
     char[] characterList = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '_'};
 
+    LeaderboardManager leaderboard;
     bool canStartGame = true;
     bool isPaused = false;
     bool startGameTimerOn = false;
@@ -25,17 +25,20 @@ public class MenuManager : MonoBehaviour
     float startGameTimer = 0.0f;
     float leaderboardTimer = 0.0f;
     int playerScore = 0;
+    int characterIndex = 0;
+    int characterColumn = 0;
+    int[] initialIndex;
 
     private void OnEnable()
     {
-        //HealthManager.OnGameOver += GameEnded;
+        PlayerMovement_Retro.OnStartButtonPressed += ProcessStartButton;
         ScoreManager.OnTimeToSendOutPlayerScores += CheckScoreForLeaderboard;
         UniversalPauseManager.OnPauseStateChanged += TogglePauseMenu;
     }
 
     private void OnDisable()
     {
-        //HealthManager.OnGameOver -= GameEnded;
+        PlayerMovement_Retro.OnStartButtonPressed -= ProcessStartButton;
         ScoreManager.OnTimeToSendOutPlayerScores -= CheckScoreForLeaderboard;
         UniversalPauseManager.OnPauseStateChanged -= TogglePauseMenu;
     }
@@ -44,7 +47,26 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         OnMainMenuOpen?.Invoke();
+        leaderboard = GetComponent<LeaderboardManager>();
+        initialIndex = new int []{ 0, characterList.Length - 1, characterList.Length - 1 };
         StartCoroutine("ToggleStartText");
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.W) && initialsEntryText.enabled)
+        {
+            characterIndex++;
+            characterIndex = characterIndex % characterList.Length;
+            UpdateInitials();
+        }
+
+        if(Input.GetKeyDown(KeyCode.S) && initialsEntryText.enabled)
+        {
+            characterIndex--;
+            characterIndex = characterIndex % characterList.Length;
+            UpdateInitials();
+        }
     }
 
     // Update is called once per frame
@@ -71,11 +93,35 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void OnStartButton(InputAction.CallbackContext context)
+    private void UpdateInitials()
+    {
+        initialIndex[characterColumn] = characterIndex;
+        initialsEntryText.text = $"{characterList[initialIndex[0]]}{characterList[initialIndex[1]]}{characterList[initialIndex[2]]}";
+    }
+
+    private void CheckScoreForLeaderboard(int playerIndex, int score)
+    {
+        //Check if score is big enough to get on the leaderboard
+        if (leaderboard.CheckIfCanGoOnLeaderboard(score))
+        {
+            leaderboardPromptText.enabled = true;
+            initialsEntryText.enabled = true;
+            playerScore = score;
+        }
+        else
+        {
+            leaderboard.DisplayLeaderboard();
+            leaderboardText.enabled = true;
+            leaderboardTimer = 10.0f;
+            leaderboardTimerOn = true;
+        }
+    }
+
+    private void ProcessStartButton()
     {
         if (isPaused) return;
 
-        if (context.phase == InputActionPhase.Started && canStartGame)
+        if (canStartGame)
         {
             StopAllCoroutines();
             startText.enabled = false;
@@ -86,7 +132,7 @@ public class MenuManager : MonoBehaviour
             startGameTimerOn = true;
         }
 
-        if (context.phase == InputActionPhase.Started && leaderboardText.enabled)
+        if (leaderboardText.enabled)
         {
             leaderboardText.enabled = false;
             canStartGame = true;
@@ -95,24 +141,37 @@ public class MenuManager : MonoBehaviour
             leaderboardTimerOn = false;
         }
 
-        if (context.phase == InputActionPhase.Started && initialsEntryText.enabled)
+        if (initialsEntryText.enabled)
         {
-            //Update leaderboard with initials
-            leaderboardPromptText.enabled = false;
-            initialsEntryText.enabled = false;
-            leaderboardText.enabled = true;
-            leaderboardText.text = $"{leaderboardText.text}\n\n1  {playerScore} {(initialsEntryText.text.Contains('_') ? initialsEntryText.text.Replace('_', ' ') : initialsEntryText.text)}";
-            leaderboardTimer = 10.0f;
-            leaderboardTimerOn = true;
+            if (characterColumn < 2)
+            {
+                characterColumn++;
+                characterIndex = 0;
+                UpdateInitials();
+            }
+            else
+            {
+                leaderboardPromptText.enabled = false;
+                leaderboardText.enabled = true;
+                //leaderboardText.text = $"{leaderboardText.text}\n\n1  {playerScore} {(initialsEntryText.text.Contains('_') ? initialsEntryText.text.Replace('_', ' ') : initialsEntryText.text)}";
+                leaderboard.UpdateLeaderBoard($"{(initialsEntryText.text.Contains('_') ? initialsEntryText.text.Replace('_', ' ') : initialsEntryText.text)}", playerScore);
+                ResetInitialsInput();
+                initialsEntryText.enabled = false;
+                leaderboard.DisplayLeaderboard();
+                leaderboardTimer = 10.0f;
+                leaderboardTimerOn = true;
+            }
         }
     }
 
-    private void CheckScoreForLeaderboard(int playerIndex, int score)
+    private void ResetInitialsInput()
     {
-        //Check if score is big enough to get on the leaderboard
-        leaderboardPromptText.enabled = true;
-        initialsEntryText.enabled = true;
-        playerScore = score;
+        characterIndex = 0;
+        characterColumn = 0;
+        initialIndex[0] = 0;
+        initialIndex[1] = characterList.Length - 1;
+        initialIndex[2] = characterList.Length - 1;
+        UpdateInitials();
     }
 
     private void TogglePauseMenu(bool pauseState)
